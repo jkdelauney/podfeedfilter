@@ -68,5 +68,3 @@ to the output files. It is safe to invoke from a cron job.
 - `feeds.yaml` – sample configuration file.
 - `requirements.txt` – Python dependencies.
 
-
-
