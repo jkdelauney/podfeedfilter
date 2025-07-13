@@ -1,5 +1,8 @@
 feeds:
   - url: "https://example.com/podcast1.rss"
+    output: "podcast1_filtered.xml"
+    exclude:
+      - "politics"
     splits:
       - output: "podcast1_tech.xml"
         title: "Podcast 1 Tech"
@@ -7,8 +10,6 @@ feeds:
         include:
           - "python"
           - "code"
-        exclude:
-          - "politics"
       - output: "podcast1_misc.xml"
         exclude:
           - "advertisement"

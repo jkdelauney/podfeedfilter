@@ -10,12 +10,19 @@ Feed URLs and filter rules are stored in a YAML file. Each feed block
 contains the source URL and one or more output definitions. Each output has an
 optional list of keywords for inclusion or exclusion. An output may also
 override the resulting feed's `title` and `description` fields.
+When a feed defines `splits`, those act as additional outputs and can be mixed
+with a base output.
 
 Example `feeds.yaml`:
 
 ```yaml
 feeds:
   - url: "https://example.com/podcast1.rss"
+    # main filtered output
+    output: "podcast1_filtered.xml"
+    exclude:
+      - "politics"
+    # additional splits using their own rules
     splits:
       - output: "podcast1_tech.xml"
         title: "Podcast 1 Tech"
@@ -23,8 +30,6 @@ feeds:
         include:
           - "python"
           - "code"
-        exclude:
-          - "politics"
       - output: "podcast1_misc.xml"
         exclude:
           - "advertisement"
@@ -62,5 +67,6 @@ to the output files. It is safe to invoke from a cron job.
 - `podfeedfilter/` – package containing the code.
 - `feeds.yaml` – sample configuration file.
 - `requirements.txt` – Python dependencies.
+
 
 
