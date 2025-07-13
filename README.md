@@ -57,5 +57,3 @@ to the output files. It is safe to invoke from a cron job.
 - `podfeedfilter/` – package containing the code.
 - `feeds.yaml` – sample configuration file.
 - `requirements.txt` – Python dependencies.
-
-
