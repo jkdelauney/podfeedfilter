@@ -22,21 +22,26 @@ def _entry_passes(entry: feedparser.FeedParserDict, include: list[str], exclude:
     return True
 
 
-def _copy_entry(fe, entry: feedparser.FeedParserDict):
-    fe.id(entry.get('id', entry.get('link')))
-    if 'title' in entry:
-        fe.title(entry['title'])
-    if 'link' in entry:
-        fe.link(href=entry['link'])
-    if 'summary' in entry:
-        fe.description(entry['summary'])
-    if 'published' in entry:
-        fe.published(entry['published'])
-    if 'author' in entry:
-        fe.author({'name': entry['author']})
-    if 'content' in entry:
-        for content in entry['content']:
-            fe.content(content.get('value', ''), type=content.get('type'))
+def _copy_entry(fe, entry: feedparser.FeedParserDict) -> None:
+    """Copy relevant fields from a parsed entry into a feedgen entry."""
+    fe.id(entry.get("id", entry.get("link")))
+    if "title" in entry:
+        fe.title(entry["title"])
+    if "link" in entry:
+        fe.link(href=entry["link"])
+    description = entry.get("summary") or entry.get("description")
+    if description:
+        fe.description(description)
+    if "published" in entry:
+        fe.published(entry["published"])
+    if "author" in entry:
+        fe.author({"name": entry["author"]})
+    if "content" in entry:
+        for content in entry["content"]:
+            fe.content(content.get("value", ""), type=content.get("type"))
+    if "enclosures" in entry:
+        for enc in entry["enclosures"]:
+            fe.enclosure(enc.get("href"), enc.get("length"), enc.get("type"))
 
 
 def process_feed(cfg: FeedConfig):
@@ -65,10 +70,13 @@ def process_feed(cfg: FeedConfig):
 
     fg = FeedGenerator()
     fg.load_extension('podcast')
-    fg.title(remote.feed.get('title', 'Filtered Feed'))
+
+    feed_title = cfg.title if cfg.title is not None else remote.feed.get('title', 'Filtered Feed')
+    fg.title(feed_title)
     if remote.feed.get('link'):
         fg.link(href=remote.feed['link'])
-    fg.description(remote.feed.get('description', ''))
+    feed_description = cfg.description if cfg.description is not None else remote.feed.get('description', '')
+    fg.description(feed_description)
 
     for entry in existing_entries:
         fe = fg.add_entry()

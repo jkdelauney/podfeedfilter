@@ -1,16 +1,21 @@
 feeds:
   - url: "https://example.com/podcast1.rss"
+    output: "podcast1_filtered.xml"
+    exclude:
+      - "politics"
     splits:
       - output: "podcast1_tech.xml"
+        title: "Podcast 1 Tech"
+        description: "Only the tech related episodes"
         include:
           - "python"
           - "code"
-        exclude:
-          - "politics"
       - output: "podcast1_misc.xml"
         exclude:
           - "advertisement"
   - url: "https://example.com/podcast2.rss"
     output: "podcast2_filtered.xml"
+    title: "Podcast 2 Filtered"
+    description: "Episodes without politics"
     exclude:
       - "politics"
