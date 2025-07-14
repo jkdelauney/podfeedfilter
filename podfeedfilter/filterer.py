@@ -2,6 +2,8 @@ from __future__ import annotations
 from pathlib import Path
 import feedparser
 from feedgen.feed import FeedGenerator
+from xml.etree import ElementTree as ET
+
 from .config import FeedConfig
 
 
@@ -75,8 +77,18 @@ def process_feed(cfg: FeedConfig):
     fg.title(feed_title)
     if remote.feed.get('link'):
         fg.link(href=remote.feed['link'])
-    feed_description = cfg.description if cfg.description is not None else remote.feed.get('description', '')
-    fg.description(feed_description)
+    remove_description = cfg.description == ""
+    feed_description = (
+        None
+        if remove_description
+        else cfg.description
+        or remote.feed.get("description")
+        or remote.feed.get("subtitle")
+        or remote.feed.get("summary")
+        or f"Filtered feed from {feed_title}"
+    )
+    placeholder_description = f"Filtered feed from {feed_title}"
+    fg.description(feed_description or placeholder_description)
 
     for entry in existing_entries:
         fe = fg.add_entry()
@@ -86,4 +98,17 @@ def process_feed(cfg: FeedConfig):
         _copy_entry(fe, entry)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fg.rss_file(str(output_path))
+    rss_data = fg.rss_str(pretty=True)
+    if remove_description:
+        root = ET.fromstring(rss_data)
+        channel = root.find("channel")
+        if channel is not None:
+            desc = channel.find("description")
+            if desc is not None:
+                channel.remove(desc)
+        rss_data = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+        with open(output_path, "wb") as f:
+            f.write(rss_data)
+    else:
+        with open(output_path, "wb") as f:
+            f.write(rss_data)

@@ -9,7 +9,8 @@ It is designed to run from the command line or via cron.
 Feed URLs and filter rules are stored in a YAML file. Each feed block
 contains the source URL and one or more output definitions. Each output has an
 optional list of keywords for inclusion or exclusion. An output may also
-override the resulting feed's `title` and `description` fields.
+override the resulting feed's `title` and `description` fields. Set
+`description: ""` to remove the description tag from the generated feed.
 When a feed defines `splits`, those act as additional outputs and can be mixed
 with a base output.
 
