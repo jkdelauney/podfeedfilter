@@ -107,8 +107,6 @@ def process_feed(cfg: FeedConfig):
             if desc is not None:
                 channel.remove(desc)
         rss_data = ET.tostring(root, encoding="utf-8", xml_declaration=True)
-        with open(output_path, "wb") as f:
-            f.write(rss_data)
-    else:
-        with open(output_path, "wb") as f:
-            f.write(rss_data)
+        
+    with open(output_path, "wb") as f:
+        f.write(rss_data)
