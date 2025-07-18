@@ -20,7 +20,7 @@ jobs:
       pages: read|write|none
       pull-requests: read|write|none
       security-events: read|write|none
-  statuses: read|write|none
+      statuses: read|write|none
     strategy:
       matrix:
         python-version: ["3.10"]
