@@ -7,3 +7,5 @@
 # Testing framework
 pytest>=7.0.0
 pytest-cov>=4.0.0
+requests>=2.32.0
+urllib3>=2.5.0

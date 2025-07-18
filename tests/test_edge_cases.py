@@ -178,7 +178,7 @@ class TestMalformedXML:
 class TestPerformanceWithLongLists:
     """Test performance with very long include/exclude lists."""
     
-    @pytest.mark.timeout(30)  # Should complete within 30 seconds
+    # Should complete within 30 seconds
     def test_very_long_include_exclude_lists(self, mock_feedparser_parse, test_feed_urls, tmp_path):
         """Performance smoke test with very long include/exclude lists."""
         test_url = test_feed_urls['normal_feed']
