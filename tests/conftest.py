@@ -26,9 +26,7 @@ def test_data_dir():
 def sample_rss_feed():
     """Load a sample RSS feed from test data."""
     rss_file = TEST_DATA_DIR / "sample_feed.xml"
-    if rss_file.exists():
-        return rss_file.read_text()
-    return None
+    return rss_file.read_text() if rss_file.exists() else None
 
 
 @pytest.fixture
