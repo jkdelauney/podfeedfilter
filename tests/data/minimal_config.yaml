@@ -1,0 +1,18 @@
+# Minimal configuration for testing edge cases
+feeds:
+  - name: "Basic Feed"
+    url: "https://example.com/feed.xml"
+    
+  - name: "Feed with Keywords Only"
+    url: "https://keywords.example.com/feed.xml"
+    filters:
+      include_keywords:
+        - "test"
+        - "example"
+
+  - name: "Feed with Time Constraints"
+    url: "https://time.example.com/feed.xml"
+    filters:
+      max_age_days: 1
+      min_duration_minutes: 1
+      max_duration_minutes: 60

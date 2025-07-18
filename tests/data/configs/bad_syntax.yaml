@@ -1,0 +1,18 @@
+# Config with bad YAML syntax
+include_patterns:
+  - '*.mp3'
+  - '*.wav'
+exclude_patterns:
+  - '*.txt'
+  - '*.md'
+  # Missing closing bracket
+  - [unclosed_bracket
+# Bad indentation
+bad_key:
+value_without_proper_indentation
+# Invalid YAML structure
+invalid: 
+  nested:
+    - item1
+    - item2
+  - this_should_not_be_here

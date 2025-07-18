@@ -1,0 +1,47 @@
+# Complex config with multiple features
+global_settings:
+  max_file_size: 100MB
+  timeout: 30s
+  debug: true
+
+include_patterns:
+  - '*.mp3'
+  - '*.wav'
+  - '*.m4a'
+  - '*podcast*'
+  - '*episode*'
+
+exclude_patterns:
+  - '*.tmp'
+  - '*.log'
+  - '*draft*'
+  - '*private*'
+
+splits:
+  - name: "audio_files"
+    filter:
+      include_patterns:
+        - '*.mp3'
+        - '*.wav'
+        - '*.m4a'
+      exclude_patterns:
+        - '*corrupt*'
+    output_path: "audio/"
+    max_files: 100
+  - name: "podcast_episodes"
+    filter:
+      include_patterns:
+        - '*podcast*'
+        - '*episode*'
+      exclude_patterns:
+        - '*trailer*'
+        - '*preview*'
+    output_path: "episodes/"
+    date_filter:
+      after: "2023-01-01"
+      before: "2024-12-31"
+
+output_settings:
+  format: "rss"
+  encoding: "utf-8"
+  validate: true

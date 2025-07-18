@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title>Complex Test Feed</title>
+        <description>A complex podcast feed with various edge cases for testing</description>
+        <link>https://complex.example.com/podcast</link>
+        <language>en-US</language>
+        <copyright>© 2024 Complex Podcast</copyright>
+        <managingEditor>editor@complex.example.com (Complex Editor)</managingEditor>
+        <webMaster>webmaster@complex.example.com (Complex Webmaster)</webMaster>
+        <pubDate>Wed, 01 May 2024 10:00:00 GMT</pubDate>
+        <lastBuildDate>Wed, 01 May 2024 10:00:00 GMT</lastBuildDate>
+        <category>Technology</category>
+        <generator>Custom Feed Generator</generator>
+        <docs>https://www.rssboard.org/rss-specification</docs>
+        <cloud domain="rpc.sys.com" port="80" path="/RPC2" registerProcedure="pingMe" protocol="soap"/>
+        <ttl>60</ttl>
+        <image>
+            <url>https://complex.example.com/image.jpg</url>
+            <title>Complex Test Feed</title>
+            <link>https://complex.example.com/podcast</link>
+            <width>144</width>
+            <height>144</height>
+            <description>Complex Test Feed Logo</description>
+        </image>
+        <skipHours>
+            <hour>0</hour>
+            <hour>1</hour>
+            <hour>2</hour>
+            <hour>3</hour>
+            <hour>4</hour>
+            <hour>5</hour>
+        </skipHours>
+        <skipDays>
+            <day>Saturday</day>
+            <day>Sunday</day>
+        </skipDays>
+        
+        <!-- Episode with iTunes tags -->
+        <item>
+            <title>Episode with iTunes Tags</title>
+            <description><![CDATA[This episode contains <strong>HTML</strong> in the description and various iTunes-specific tags.]]></description>
+            <link>https://complex.example.com/episode/itunes</link>
+            <guid isPermaLink="false">itunes-episode-guid</guid>
+            <pubDate>Wed, 01 May 2024 10:00:00 GMT</pubDate>
+            <author>podcast@complex.example.com (iTunes Author)</author>
+            <category>Technology/Programming</category>
+            <comments>https://complex.example.com/episode/itunes/comments</comments>
+            <enclosure url="https://complex.example.com/audio/itunes.mp3" length="45678901" type="audio/mpeg"/>
+            <source url="https://complex.example.com/feed.xml">Complex Test Feed</source>
+            <itunes:duration>01:15:30</itunes:duration>
+            <itunes:explicit>no</itunes:explicit>
+            <itunes:subtitle>Episode with iTunes metadata</itunes:subtitle>
+            <itunes:summary>Detailed summary of the episode with iTunes-specific information</itunes:summary>
+            <itunes:author>iTunes Specific Author</itunes:author>
+            <itunes:keywords>technology, programming, itunes, podcast</itunes:keywords>
+        </item>
+        
+        <!-- Episode with minimal information -->
+        <item>
+            <title>Minimal Episode</title>
+            <description>Very basic episode with minimal RSS elements</description>
+            <link>https://complex.example.com/episode/minimal</link>
+            <guid>minimal-episode</guid>
+            <pubDate>Tue, 30 Apr 2024 15:30:00 GMT</pubDate>
+        </item>
+        
+        <!-- Episode with special characters and encoding -->
+        <item>
+            <title>Special Characters: åäö ñ é ü & &lt;test&gt;</title>
+            <description><![CDATA[Episode with special characters: åäö ñ é ü & <test>. Also includes "quotes" and 'apostrophes'.]]></description>
+            <link>https://complex.example.com/episode/special-chars</link>
+            <guid>special-chars-episode</guid>
+            <pubDate>Mon, 29 Apr 2024 08:45:00 GMT</pubDate>
+            <enclosure url="https://complex.example.com/audio/special-chars.mp3" length="20971520" type="audio/mpeg"/>
+            <category>Internationalization</category>
+        </item>
+        
+        <!-- Episode with very long description -->
+        <item>
+            <title>Episode with Long Description</title>
+            <description><![CDATA[This is a very long description that spans multiple lines and contains a lot of information about the episode. It includes details about the hosts, the topics discussed, the guests, and various other metadata that might be relevant for filtering purposes. The description continues with more information about the technical aspects of the episode, including the recording setup, the equipment used, and the post-production process. This kind of long description is common in professional podcast feeds and should be handled correctly by the filtering system. The description ends with some additional notes about upcoming episodes and contact information for the podcast producers.]]></description>
+            <link>https://complex.example.com/episode/long-description</link>
+            <guid>long-description-episode</guid>
+            <pubDate>Sun, 28 Apr 2024 12:00:00 GMT</pubDate>
+            <enclosure url="https://complex.example.com/audio/long-desc.mp3" length="52428800" type="audio/mpeg"/>
+            <category>Technology</category>
+            <category>Education</category>
+        </item>
+        
+        <!-- Episode with missing enclosure -->
+        <item>
+            <title>Episode Without Audio</title>
+            <description>This episode has no audio enclosure, which might be an edge case</description>
+            <link>https://complex.example.com/episode/no-audio</link>
+            <guid>no-audio-episode</guid>
+            <pubDate>Sat, 27 Apr 2024 16:20:00 GMT</pubDate>
+            <category>Text-only</category>
+        </item>
+        
+        <!-- Episode with multiple enclosures -->
+        <item>
+            <title>Episode with Multiple Formats</title>
+            <description>This episode has multiple audio formats available</description>
+            <link>https://complex.example.com/episode/multi-format</link>
+            <guid>multi-format-episode</guid>
+            <pubDate>Fri, 26 Apr 2024 09:15:00 GMT</pubDate>
+            <enclosure url="https://complex.example.com/audio/multi.mp3" length="31457280" type="audio/mpeg"/>
+            <enclosure url="https://complex.example.com/audio/multi.m4a" length="25165824" type="audio/mp4"/>
+            <enclosure url="https://complex.example.com/audio/multi.ogg" length="20971520" type="audio/ogg"/>
+            <category>Multi-format</category>
+        </item>
+        
+        <!-- Episode with invalid date -->
+        <item>
+            <title>Episode with Invalid Date</title>
+            <description>This episode has a malformed publication date</description>
+            <link>https://complex.example.com/episode/invalid-date</link>
+            <guid>invalid-date-episode</guid>
+            <pubDate>Invalid Date String</pubDate>
+            <enclosure url="https://complex.example.com/audio/invalid-date.mp3" length="15728640" type="audio/mpeg"/>
+            <category>Edge Cases</category>
+        </item>
+    </channel>
+</rss>

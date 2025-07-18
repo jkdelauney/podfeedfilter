@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Minimal Test Podcast</title>
+    <link>https://example.com/minimal</link>
+    <language>en-us</language>
+    
+    <item>
+      <title>Episode One</title>
+      <link>https://example.com/minimal/episode-1</link>
+      <guid isPermaLink="false">minimal-episode-1</guid>
+      <pubDate>Fri, 29 Dec 2023 10:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/minimal-1.mp3" length="15000000" type="audio/mpeg"/>
+    </item>
+    
+    <item>
+      <title>Episode Two</title>
+      <link>https://example.com/minimal/episode-2</link>
+      <guid isPermaLink="false">minimal-episode-2</guid>
+      <pubDate>Thu, 28 Dec 2023 10:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/minimal-2.mp3" length="12000000" type="audio/mpeg"/>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Future Episodes Podcast</title>
+    <link>https://example.com/future-podcast</link>
+    <description>A test podcast with future episodes for testing append functionality</description>
+    <language>en-us</language>
+    <itunes:author>Future Author</itunes:author>
+    <itunes:summary>A test podcast with future episodes for testing append functionality</itunes:summary>
+    
+    <item>
+      <title>Current Episode: AI in Healthcare</title>
+      <link>https://example.com/future-podcast/ai-healthcare</link>
+      <description>Current episode about AI applications in healthcare</description>
+      <author>current@example.com (Current Host)</author>
+      <guid isPermaLink="false">ai-healthcare-current</guid>
+      <pubDate>Wed, 03 Jan 2024 09:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/ai-healthcare.mp3" length="20000000" type="audio/mpeg"/>
+      <itunes:author>Current Host</itunes:author>
+      <itunes:summary>Current episode about AI applications in healthcare</itunes:summary>
+      <itunes:duration>00:35:15</itunes:duration>
+    </item>
+    
+    <item>
+      <title>Future Episode: Space Exploration Update</title>
+      <link>https://example.com/future-podcast/space-exploration</link>
+      <description>Upcoming episode about latest space exploration missions</description>
+      <author>future@example.com (Future Host)</author>
+      <guid isPermaLink="false">space-exploration-future</guid>
+      <pubDate>Fri, 05 Jan 2024 14:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/space-exploration.mp3" length="22000000" type="audio/mpeg"/>
+      <itunes:author>Future Host</itunes:author>
+      <itunes:summary>Upcoming episode about latest space exploration missions</itunes:summary>
+      <itunes:duration>00:38:20</itunes:duration>
+    </item>
+    
+    <item>
+      <title>Future Episode: Climate Change Solutions</title>
+      <link>https://example.com/future-podcast/climate-solutions</link>
+      <description>Future episode discussing innovative climate change solutions</description>
+      <author>future@example.com (Future Host)</author>
+      <guid isPermaLink="false">climate-solutions-future</guid>
+      <pubDate>Mon, 08 Jan 2024 11:30:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/climate-solutions.mp3" length="28000000" type="audio/mpeg"/>
+      <itunes:author>Future Host</itunes:author>
+      <itunes:summary>Future episode discussing innovative climate change solutions</itunes:summary>
+      <itunes:duration>00:47:45</itunes:duration>
+    </item>
+    
+  </channel>
+</rss>

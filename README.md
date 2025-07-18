@@ -46,6 +46,10 @@ when an `include` list is provided, it contains at least one of those words in
 its title or description. When a feed defines multiple `splits`, each split is
 treated as a separate output file with its own include and exclude rules.
 
+## Requirements
+
+- Python 3.10+ (uses modern type hint syntax)
+
 ## Usage
 
 Install requirements and run the filter:
@@ -62,9 +66,56 @@ to the output files. It is safe to invoke from a cron job.
 
 - `-c/--config` – path to the configuration YAML file (default `feeds.yaml`).
 
+## Development
+
+### Running Tests
+
+The project uses pytest for testing. To run the full test suite:
+
+```bash
+pytest -q
+```
+
+This will run 127 tests covering various aspects of the feed filtering functionality.
+
+### Test Coverage
+
+The project is configured to track test coverage for the core modules (`config.py` and `filterer.py`) with a target of >90% line coverage. To run tests with coverage reporting:
+
+```bash
+pytest -q --cov=podfeedfilter.config --cov=podfeedfilter.filterer --cov-report=term-missing --cov-fail-under=90
+```
+
+The coverage configuration is also included in `pytest.ini`, so running `pytest` will automatically include coverage reporting. Coverage reports are generated in both terminal and HTML formats (in `htmlcov/` directory).
+
+Current coverage: **100%** for both `config.py` and `filterer.py`.
+
+### Installing Development Dependencies
+
+To install testing dependencies:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Alternatively, install testing dependencies manually:
+
+```bash
+pip install pytest pytest-cov
+```
+
+## AI Assistant Documentation
+
+**For AI coding assistants (Claude, Cursor, Copilot, Cline, etc.)**: This project includes comprehensive documentation for AI assistants in `AGENT.md`. This file contains detailed architecture information, development guidelines, testing procedures, and codebase structure that AI assistants should reference for context-aware code assistance.
+
 ## Project layout
 
 - `podfeedfilter/` – package containing the code.
 - `feeds.yaml` – sample configuration file.
-- `requirements.txt` – Python dependencies.
+- `requirements.txt` – core Python dependencies.
+- `requirements-dev.txt` – development and testing dependencies.
+- `pytest.ini` – pytest configuration with coverage settings.
+- `tests/` – test suite directory.
+- `AGENT.md` – **AI assistant documentation** (architecture, guidelines, testing)
+- `EDGE_CASE_TESTS.md` – edge case testing documentation.
 

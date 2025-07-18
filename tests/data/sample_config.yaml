@@ -1,0 +1,53 @@
+# Sample configuration for testing podfeedfilter
+feeds:
+  - name: "Tech Talk Weekly"
+    url: "https://example.com/feeds/tech-talk.xml"
+    filters:
+      include_keywords:
+        - "python"
+        - "programming"
+        - "software"
+        - "tech"
+      exclude_keywords:
+        - "boring"
+        - "administrative"
+      max_age_days: 30
+      min_duration_minutes: 5
+      max_duration_minutes: 120
+    
+  - name: "Data Science Podcast"
+    url: "https://datascience.example.com/feed.xml"
+    filters:
+      include_keywords:
+        - "machine learning"
+        - "data science"
+        - "statistics"
+        - "analytics"
+      exclude_keywords:
+        - "sponsored"
+        - "advertisement"
+      max_age_days: 14
+      min_duration_minutes: 15
+      
+  - name: "Python Bytes"
+    url: "https://pythonbytes.fm/episodes/rss"
+    filters:
+      include_keywords:
+        - "python"
+        - "development"
+      max_age_days: 7
+      min_duration_minutes: 10
+
+# Global settings
+global_settings:
+  output_format: "rss"
+  max_items_per_feed: 50
+  user_agent: "PodFeedFilter/1.0"
+  timeout_seconds: 30
+  retry_attempts: 3
+  
+# Notification settings
+notifications:
+  enabled: false
+  email: "user@example.com"
+  webhook_url: null
