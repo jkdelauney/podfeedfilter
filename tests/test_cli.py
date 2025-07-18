@@ -118,8 +118,13 @@ def test_cli_subprocess_with_nonexistent_config(tmp_path):
     ], capture_output=True, text=True)
 
     # Check command failed as expected
-    assert result.returncode != 0, "Command should have failed with non-existent config"
-    assert "No such file or directory" in result.stderr or "FileNotFoundError" in result.stderr
+    assert result.returncode != 0, (
+        "Command should have failed with non-existent config"
+    )
+    assert (
+        "No such file or directory" in result.stderr or
+        "FileNotFoundError" in result.stderr
+    )
 
 
 def test_cli_subprocess_with_invalid_config(tmp_path):
@@ -136,7 +141,9 @@ def test_cli_subprocess_with_invalid_config(tmp_path):
     ], capture_output=True, text=True)
 
     # Check command failed as expected
-    assert result.returncode != 0, "Command should have failed with invalid config"
+    assert result.returncode != 0, (
+        "Command should have failed with invalid config"
+    )
 
 
 def test_cli_direct_main_call_with_basic_config(tmp_path,
@@ -238,7 +245,9 @@ def test_cli_direct_main_call_with_splits_config(tmp_path,
     ]
 
     for output_file in expected_files:
-        assert output_file.exists(), f"Expected output file {output_file} was not created"
+        assert output_file.exists(), (
+            f"Expected output file {output_file} was not created"
+        )
 
         # Verify the output file contains valid XML (handle both single and
         # double quotes)
@@ -351,7 +360,9 @@ def test_cli_help_flag_subprocess():
     ], capture_output=True, text=True)
 
     # Check command executed successfully
-    assert result.returncode == 0, f"Help command failed with stderr: {result.stderr}"
+    assert result.returncode == 0, (
+        f"Help command failed with stderr: {result.stderr}"
+    )
 
     # Check help text contains expected content
     assert "Filter podcast feeds" in result.stdout

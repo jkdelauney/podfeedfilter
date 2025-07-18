@@ -50,7 +50,8 @@ def test_splits_processing(mock_feedparser_parse):
     # Temporary output files
     output_paths = {}
     for split in test_splits_config['splits']:
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(
+                mode='w', suffix='.xml', delete=False) as f:
             output_paths[split['name']] = Path(f.name)
 
     try:
@@ -75,24 +76,48 @@ def test_splits_processing(mock_feedparser_parse):
 
             if split_name == "tech_episodes":
                 # Should include tech episodes, exclude advertisements
-                assert any('Tech Trends' in entry.title for entry in feed.entries), "Tech episodes file should include tech episodes"
-                assert all('advertisement' not in entry.title.lower() and 'sponsored' not in entry.title.lower() for entry in feed.entries), "Tech episodes should exclude advertisements"
+                assert any(
+                    'Tech Trends' in entry.title for entry in feed.entries
+                    ), "Tech episodes file should include tech episodes"
+                assert all(
+                    'advertisement' not in entry.title.lower() and
+                    'sponsored' not in entry.title.lower()
+                    for entry in feed.entries
+                ), "Tech episodes should exclude advertisements"
             elif split_name == "politics_episodes":
                 # Should include politics episodes, exclude tech
-                assert any('Election' in entry.title for entry in feed.entries), "Politics episodes file should include election episodes"
-                assert all('tech' not in entry.title.lower() for entry in feed.entries), "Politics episodes should exclude tech"
+                assert any(
+                    'Election' in entry.title for entry in feed.entries
+                ), (
+                    "Politics episodes file should include election episodes"
+                )
+                assert all(
+                    'tech' not in entry.title.lower() for entry in feed.entries
+                    ), "Politics episodes should exclude tech"
             elif split_name == "non_ads":
-                # Should exclude advertisements and sponsored content (edge case: only exclude list)
-                assert all('advertisement' not in entry.title.lower() and 'sponsored' not in entry.title.lower() for entry in feed.entries), "Non-ads file should exclude advertisements and sponsored content"
+                # Should exclude advertisements and sponsored content (edge
+                # case: only exclude list)
+                assert all(
+                    'advertisement' not in entry.title.lower() and
+                    'sponsored' not in entry.title.lower()
+                    for entry in feed.entries
+                ), (
+                    "Non-ads file should exclude advertisements and sponsored "
+                    "content"
+                )
                 # Should include both tech and politics episodes
-                assert len(feed.entries) >= 2, "Non-ads should include multiple episodes (tech and politics)"
+                assert len(feed.entries) >= 2, (
+                    "Non-ads should include multiple episodes "
+                    "(tech and politics)"
+                )
 
         print("\n✅ SUCCESS: All split processing requirements met!")
         print("✓ 3 output files created successfully")
         print("✓ Each file contains correct subset per include/exclude rules")
         print("✓ Edge case handled: split with only exclude list (non_ads)")
         print("✓ Tech episodes split: includes tech content, excludes ads")
-        print("✓ Politics episodes split: includes political content, excludes tech")
+        print("✓ Politics episodes split: includes political content, "
+              "excludes tech")
         print("✓ Non-ads split: excludes advertisements and sponsored content")
 
     finally:
