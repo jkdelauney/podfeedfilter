@@ -22,6 +22,7 @@ from feedgen.feed import FeedGenerator
 from podfeedfilter.filterer import _text_matches, _entry_passes, _copy_entry
 
 
+## pylint: disable=C0121
 class TestTextMatches:
     """Test cases for _text_matches function."""
 
@@ -315,3 +316,4 @@ class TestEntryWhitespaceHandling:
         # Include has items, exclude empty - only include filtering
         assert _entry_passes(entry, ["test"], []) == True
         assert _entry_passes(entry, ["nonexistent"], []) == False
+## pylint: enable=C0321
