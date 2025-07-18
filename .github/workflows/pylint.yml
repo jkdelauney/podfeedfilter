@@ -5,6 +5,22 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idpermissions
+    permissions:
+      actions: read|write|none
+      attestations: read|write|none
+      checks: read|write|none
+      contents: read|write|none
+      deployments: read|write|none
+      id-token: write|none
+      issues: read|write|none
+      models: read|none
+      discussions: read|write|none
+      packages: read|write|none
+      pages: read|write|none
+      pull-requests: read|write|none
+      security-events: read|write|none
+  statuses: read|write|none
     strategy:
       matrix:
         python-version: ["3.10"]
