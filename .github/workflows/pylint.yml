@@ -1,8 +1,6 @@
 name: Pylint
 
-on:
-  push:
-    branches: [main, linter_bypass]
+on: [push]
 
 jobs:
   build:
