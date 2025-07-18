@@ -3,7 +3,8 @@ Edge case tests for podcast filter application.
 
 This module contains tests for various edge cases and error conditions:
 - Feed with no matching episodes → output file not written or empty
-- Pre-existing output file with malformed XML → ensure graceful failure or overwrite
+- Pre-existing output file with malformed XML → ensure graceful failure or
+  overwrite
 - Very long include/exclude lists performance smoke test
 - Invalid enclosure fields to ensure _copy_entry tolerates missing length/type
 """
@@ -20,7 +21,9 @@ from podfeedfilter.config import FeedConfig
 class TestNoMatchingEpisodes:
     """Test behavior when no episodes match filtering criteria."""
 
-    def test_no_matching_episodes_output_not_created(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_no_matching_episodes_output_not_created(self,
+                                                     mock_feedparser_parse,
+                                                     test_feed_urls, tmp_path):
         """Test that no output file is created when no episodes match."""
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "no_matches.xml"
@@ -37,7 +40,8 @@ class TestNoMatchingEpisodes:
         # Output file should not be created
         assert not output_path.exists()
 
-    def test_empty_feed_no_output_created(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_empty_feed_no_output_created(self, mock_feedparser_parse,
+                                          test_feed_urls, tmp_path):
         """Test that no output file is created for empty feeds."""
         test_url = test_feed_urls['empty_feed']
         output_path = tmp_path / "empty_feed.xml"
@@ -54,8 +58,11 @@ class TestNoMatchingEpisodes:
         # Output file should not be created for empty feeds
         assert not output_path.exists()
 
-    def test_all_episodes_excluded_no_output(self, mock_feedparser_parse, test_feed_urls, tmp_path):
-        """Test that no output file is created when all episodes are excluded."""
+    def test_all_episodes_excluded_no_output(self, mock_feedparser_parse,
+                                             test_feed_urls, tmp_path):
+        """
+        Test that no output file is created when all episodes are excluded.
+        """
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "all_excluded.xml"
 
@@ -64,7 +71,8 @@ class TestNoMatchingEpisodes:
             url=test_url,
             output=str(output_path),
             include=[],
-            exclude=['tech', 'election', 'special', 'offer', 'analysis', 'latest', 'premium']
+            exclude=['tech', 'election', 'special', 'offer', 'analysis',
+                     'latest', 'premium']
         )
 
         process_feed(config)
@@ -76,7 +84,8 @@ class TestNoMatchingEpisodes:
 class TestMalformedXML:
     """Test behavior with malformed existing output files."""
 
-    def test_malformed_xml_overwritten(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_malformed_xml_overwritten(self, mock_feedparser_parse,
+                                       test_feed_urls, tmp_path):
         """Test that malformed XML is overwritten with valid output."""
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "malformed.xml"
@@ -107,7 +116,8 @@ class TestMalformedXML:
         assert len(output_feed.entries) == 1
         assert output_feed.entries[0].title == "Latest Tech Trends 2024"
 
-    def test_partially_malformed_xml_overwritten(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_partially_malformed_xml_overwritten(self, mock_feedparser_parse,
+                                                 test_feed_urls, tmp_path):
         """Test that partially malformed XML is overwritten."""
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "partial_malformed.xml"
@@ -143,14 +153,16 @@ class TestMalformedXML:
 
         # Verify it's parseable
         output_feed = feedparser.parse(str(output_path))
-        # Should have the new tech episode plus the broken episode that was preserved
+        # Should have the new tech episode plus the broken episode that was
+        # preserved
         assert len(output_feed.entries) >= 1
         # The latest entry should be the tech episode
         tech_episodes = [e for e in output_feed.entries if 'tech' in e.title.lower()]
         assert len(tech_episodes) == 1
         assert tech_episodes[0].title == "Latest Tech Trends 2024"
 
-    def test_empty_file_overwritten(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_empty_file_overwritten(self, mock_feedparser_parse,
+                                    test_feed_urls, tmp_path):
         """Test that empty file is overwritten with valid output."""
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "empty.xml"
@@ -179,7 +191,8 @@ class TestPerformanceWithLongLists:
     """Test performance with very long include/exclude lists."""
 
     # Should complete within 30 seconds
-    def test_very_long_include_exclude_lists(self, mock_feedparser_parse, test_feed_urls, tmp_path):
+    def test_very_long_include_exclude_lists(self, mock_feedparser_parse,
+                                             test_feed_urls, tmp_path):
         """Performance smoke test with very long include/exclude lists."""
         test_url = test_feed_urls['normal_feed']
         output_path = tmp_path / "performance_test.xml"
@@ -204,7 +217,9 @@ class TestPerformanceWithLongLists:
 
         # Should complete reasonably quickly (under 30 seconds due to timeout)
         processing_time = end_time - start_time
-        assert processing_time < 30.0, f"Processing took too long: {processing_time} seconds"
+        assert processing_time < 30.0, (
+            f"Processing took too long: {processing_time} seconds"
+        )
 
         # Should still produce correct output
         assert output_path.exists()
@@ -254,12 +269,16 @@ class TestPerformanceWithLongLists:
             end_time = time.time()
 
             processing_time = end_time - start_time
-            assert processing_time < 10.0, f"Processing large feed took too long: {processing_time} seconds"
+            assert processing_time < 10.0, (
+                f"Processing large feed took too long: {processing_time} "
+                "seconds"
+            )
 
             # Should produce output with tech episodes
             assert output_path.exists()
             output_feed = feedparser.parse(str(output_path))
-            # Should have all 1000 episodes because the mock doesn't filter for existing IDs
+            # Should have all 1000 episodes because the mock doesn't filter
+            # for existing IDs
             assert len(output_feed.entries) == 1000
 
         finally:
@@ -333,7 +352,7 @@ class TestInvalidEnclosureFields:
         entry = feedparser.FeedParserDict({
             'id': 'test_entry',
             'title': 'Test Entry',
-            'enclosures': [{'href': 'http://example.com/audio.mp3'}]  # Only href
+            'enclosures': [{'href': 'http://example.com/audio.mp3'}]
         })
 
         fg = FeedGenerator()
@@ -418,7 +437,8 @@ class TestInvalidEnclosureFields:
             'title': 'Test Entry',
             'enclosures': [
                 {'href': 'http://example.com/audio.mp3', 'length': 'invalid_length', 'type': 'audio/mpeg'},
-                {'href': '', 'length': '25000000', 'type': 'audio/mpeg'},  # Empty href
+                # Empty href
+                {'href': '', 'length': '25000000', 'type': 'audio/mpeg'},
                 {'length': '25000000', 'type': 'audio/mpeg'},  # Missing href
                 None  # Null enclosure
             ]
@@ -493,9 +513,11 @@ class TestExtremeCases:
             'summary': 'Test summary'
         }
 
-        # Empty strings in keywords actually match everything (due to string.find(''))
+        # Empty strings in keywords actually match everything
+        # (due to string.find(''))
         assert _entry_passes(entry, ['', 'test'], []) == True  # Both match
         assert _entry_passes(entry, [''], []) == True  # Empty string matches
         assert _entry_passes(entry, ['nonexistent'], []) == False  # No match
-        assert _entry_passes(entry, [], ['']) == False  # Empty string excludes (matches everything)
+        # Empty string excludes (matches everything)
+        assert _entry_passes(entry, [], ['']) == False
         assert _entry_passes(entry, [], ['', 'test']) == False  # Both exclude
