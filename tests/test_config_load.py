@@ -41,12 +41,12 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         # Should have 3 FeedConfig objects: 1 base + 2 splits
         assert len(result) == 3
-        
+
         # Check base config
         base_config = result[0]
         assert base_config.url == "https://example.com/feed.xml"
@@ -55,7 +55,7 @@ feeds:
         assert base_config.exclude == ["boring"]
         assert base_config.title == "Base Feed"
         assert base_config.description == "Base feed description"
-        
+
         # Check first split
         split1 = result[1]
         assert split1.url == "https://example.com/feed.xml"
@@ -64,7 +64,7 @@ feeds:
         assert split1.exclude == ["beginner"]
         assert split1.title == "Advanced Topics"
         assert split1.description == "Advanced programming topics"
-        
+
         # Check second split
         split2 = result[2]
         assert split2.url == "https://example.com/feed.xml"
@@ -87,16 +87,16 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         # Should have only 2 FeedConfig objects from splits
         assert len(result) == 2
-        
+
         assert result[0].url == "https://example.com/feed.xml"
         assert result[0].output == "split1.xml"
         assert result[0].include == ["tech"]
-        
+
         assert result[1].url == "https://example.com/feed.xml"
         assert result[1].output == "split2.xml"
         assert result[1].include == ["science"]
@@ -116,9 +116,9 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert len(result) == 2
         assert result[0].output == "from_splits.xml"
         assert result[1].output == "from_split.xml"
@@ -132,16 +132,16 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert len(result) == 1
         config = result[0]
-        
+
         # Check required fields
         assert config.url == "https://example.com/feed.xml"
         assert config.output == "test.xml"
-        
+
         # Check optional fields have correct defaults
         assert config.include == []
         assert config.exclude == []
@@ -157,9 +157,9 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert len(result) == 1
         assert result[0].output == "filtered.xml"
 
@@ -174,12 +174,12 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert len(result) == 1
         config = result[0]
-        
+
         assert config.include == []
         assert config.exclude == []
 
@@ -190,9 +190,9 @@ feeds: []
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert isinstance(result, list)
         assert len(result) == 0
 
@@ -203,9 +203,9 @@ some_other_key: "value"
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert isinstance(result, list)
         assert len(result) == 0
 
@@ -214,9 +214,9 @@ some_other_key: "value"
         config_content = ""
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert isinstance(result, list)
         assert len(result) == 0
 
@@ -229,7 +229,7 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         with pytest.raises(KeyError, match="url"):
             load_config(str(config_file))
 
@@ -243,7 +243,7 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         with pytest.raises(yaml.YAMLError):
             load_config(str(config_file))
 
@@ -259,14 +259,14 @@ feeds:
   - url: "https://example.com/feed1.xml"
     output: "feed1.xml"
     include: ["python"]
-    
+
   - url: "https://example.com/feed2.xml"
     splits:
       - output: "feed2_split1.xml"
         include: ["tech"]
       - output: "feed2_split2.xml"
         exclude: ["boring"]
-        
+
   - url: "https://example.com/feed3.xml"
     output: "feed3.xml"
     title: "Custom Feed"
@@ -276,12 +276,12 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         # Should have 5 FeedConfig objects: 1 + 0 + 2 + 1 + 1 = 5
         assert len(result) == 5
-        
+
         # Check that all have correct URLs
         expected_urls = [
             "https://example.com/feed1.xml",
@@ -290,7 +290,7 @@ feeds:
             "https://example.com/feed3.xml",
             "https://example.com/feed3.xml"
         ]
-        
+
         for i, config in enumerate(result):
             assert config.url == expected_urls[i]
 
@@ -302,9 +302,9 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         # Should be empty because no output, include, exclude, title, or description
         assert len(result) == 0
 
@@ -317,7 +317,7 @@ feeds:
             {"title": "Test Feed"},
             {"description": "Test description"}
         ]
-        
+
         for i, extra_config in enumerate(test_cases):
             config_content = f"""
 feeds:
@@ -329,12 +329,12 @@ feeds:
                     config_content += f'    {key}: "{value}"\n'
                 else:
                     config_content += f'    {key}: {value}\n'
-            
+
             config_file = tmp_path / f"config{i}.yaml"
             config_file.write_text(config_content)
-            
+
             result = load_config(str(config_file))
-            
+
             assert len(result) == 1, f"Failed for config with {extra_config}"
             assert result[0].url == f"https://example.com/feed{i}.xml"
 
@@ -351,12 +351,12 @@ feeds:
 """
         config_file = tmp_path / "config.yaml"
         config_file.write_text(config_content)
-        
+
         result = load_config(str(config_file))
-        
+
         assert len(result) == 1
         config = result[0]
-        
+
         # Check types
         assert isinstance(config.url, str)
         assert isinstance(config.output, str)
@@ -364,7 +364,7 @@ feeds:
         assert isinstance(config.exclude, list)
         assert isinstance(config.title, str)
         assert isinstance(config.description, str)
-        
+
         # Check values
         assert config.url == "https://example.com/feed.xml"
         assert config.output == "test.xml"

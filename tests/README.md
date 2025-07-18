@@ -59,7 +59,7 @@ pytest --cov=podfeedfilter
 
 Available test markers (defined in `pytest.ini`):
 - `unit` - Unit tests
-- `integration` - Integration tests  
+- `integration` - Integration tests
 - `slow` - Slow tests (can be skipped)
 - `network` - Tests requiring network access
 

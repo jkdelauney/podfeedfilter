@@ -72,7 +72,7 @@ def test_splits_processing(mock_feedparser_parse):
             print(f"\n{split_name} file has {len(feed.entries)} episodes:")
             for entry in feed.entries:
                 print(f"  - {entry.title}")
-            
+
             if split_name == "tech_episodes":
                 # Should include tech episodes, exclude advertisements
                 assert any('Tech Trends' in entry.title for entry in feed.entries), "Tech episodes file should include tech episodes"
@@ -86,7 +86,7 @@ def test_splits_processing(mock_feedparser_parse):
                 assert all('advertisement' not in entry.title.lower() and 'sponsored' not in entry.title.lower() for entry in feed.entries), "Non-ads file should exclude advertisements and sponsored content"
                 # Should include both tech and politics episodes
                 assert len(feed.entries) >= 2, "Non-ads should include multiple episodes (tech and politics)"
-        
+
         print("\n✅ SUCCESS: All split processing requirements met!")
         print("✓ 3 output files created successfully")
         print("✓ Each file contains correct subset per include/exclude rules")

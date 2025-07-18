@@ -14,8 +14,13 @@ def _text_matches(text: str, keywords: list[str]) -> bool:
     return False
 
 
-def _entry_passes(entry: feedparser.FeedParserDict, include: list[str], exclude: list[str]) -> bool:
-    content = f"{entry.get('title', '')} {entry.get('description', '')} {entry.get('summary', '')}"
+def _entry_passes(entry: feedparser.FeedParserDict, include: list[str],
+                  exclude: list[str]) -> bool:
+    content = (
+        f"{entry.get('title', '')} "
+        f"{entry.get('description', '')} "
+        f"{entry.get('summary', '')}"
+    )
     if exclude and _text_matches(content, exclude):
         return False
     if include and not _text_matches(content, include):
@@ -56,7 +61,6 @@ def process_feed(cfg: FeedConfig):
             existing_entries.append(entry)
             entry_id = str(entry.get('id') or entry.get('link'))
             existing_ids.add(entry_id)
-#           existing_ids.add(e.get('id') or e.get('link'))
 
     remote = feedparser.parse(cfg.url)
     remote_feed = cast(feedparser.FeedParserDict, remote.feed)
@@ -75,11 +79,16 @@ def process_feed(cfg: FeedConfig):
     fg = FeedGenerator()
     fg.load_extension('podcast')
 
-    feed_title = cfg.title if cfg.title is not None else remote_feed.get('title', 'Filtered Feed')
+    feed_title = cfg.title if cfg.title is not None else remote_feed.get(
+        'title', 'Filtered Feed')
     fg.title(feed_title)
     if remote_feed.get('link'):
         fg.link(href=remote_feed['link'])
-    feed_description = cfg.description if cfg.description is not None else remote_feed.get('description', '')
+    feed_description = (
+        cfg.description
+        if cfg.description is not None
+        else remote_feed.get('description', '')
+    )
     fg.description(feed_description)
 
     for entry in existing_entries:

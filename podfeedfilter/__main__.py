@@ -6,7 +6,8 @@ from .filterer import process_feed
 def main() -> None:
     parser = argparse.ArgumentParser(description="Filter podcast feeds")
     parser.add_argument(
-        "-c", "--config", default="feeds.yaml", help="Path to feed configuration"
+        "-c", "--config", default="feeds.yaml", help="Path to feed "
+        "configuration"
     )
     args = parser.parse_args()
     feeds = load_config(args.config)

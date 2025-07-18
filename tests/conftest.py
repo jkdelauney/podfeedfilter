@@ -42,11 +42,12 @@ def sample_yaml_config():
 @pytest.fixture
 def temp_config_file():
     """Create a temporary configuration file for testing."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml',
+                                     delete=False) as f:
         temp_path = f.name
-    
+
     yield temp_path
-    
+
     # Cleanup
     if os.path.exists(temp_path):
         os.unlink(temp_path)
@@ -113,19 +114,21 @@ def create_test_rss_feed(title: str, items: list) -> str:
         {items}
     </channel>
 </rss>"""
-    
+
     items_xml = ""
     for item in items:
         item_xml = f"""
         <item>
             <title>{item.get('title', 'Test Item')}</title>
-            <description>{item.get('description', 'Test description')}</description>
+            <description>{item.get('description',
+                                   'Test description')}</description>
             <link>{item.get('link', 'https://example.com/item')}</link>
-            <pubDate>{item.get('pubDate', 'Mon, 01 Jan 2024 12:00:00 GMT')}</pubDate>
+            <pubDate>{item.get('pubDate', 'Mon, 01 Jan 2024 12:00:00 GMT'
+                               )}</pubDate>
             <guid>{item.get('guid', 'test-guid')}</guid>
         </item>"""
         items_xml += item_xml
-    
+
     return rss_template.format(title=title, items=items_xml)
 
 
@@ -154,26 +157,29 @@ def config_files():
 @pytest.fixture
 def temp_config_from_fixture(tmp_path):
     """Helper to copy a config fixture to a temporary path.
-    
+
     Returns a function that takes a config name and returns the temp path.
     """
     def _copy_config(config_name: str) -> Path:
         """Copy a config fixture to tmp_path and return the path.
-        
+
         Args:
             config_name: Name of the config (e.g., 'basic_include_exclude')
-            
+
         Returns:
             Path to the copied config file in tmp_path
         """
         config_path = CONFIG_DIR / f"{config_name}.yaml"
         if not config_path.exists():
-            raise FileNotFoundError(f"Config fixture '{config_name}' not found at {config_path}")
-        
+            raise FileNotFoundError(
+                f"Config fixture '{config_name}' not found at "
+                f"{config_path}"
+            )
+
         temp_config_path = tmp_path / f"{config_name}.yaml"
         shutil.copy2(config_path, temp_config_path)
         return temp_config_path
-    
+
     return _copy_config
 
 
@@ -237,19 +243,19 @@ def all_temp_configs(tmp_path):
     configs = {}
     config_names = [
         "basic_include_exclude",
-        "splits_config", 
+        "splits_config",
         "missing_keys",
         "bad_syntax",
         "empty_config",
         "complex_config"
     ]
-    
+
     for config_name in config_names:
         config_path = CONFIG_DIR / f"{config_name}.yaml"
         temp_config_path = tmp_path / f"{config_name}.yaml"
         shutil.copy2(config_path, temp_config_path)
         configs[config_name] = temp_config_path
-    
+
     return configs
 
 
@@ -259,12 +265,13 @@ FEED_FILES_DIR = TEST_DATA_DIR / "feeds"
 
 @pytest.fixture
 def mock_feedparser_parse(monkeypatch):
-    """Monkeypatch feedparser.parse to return pre-parsed objects from static XML files.
-    
-    This fixture intercepts feedparser.parse(url) calls and returns pre-parsed feed objects
-    from static XML files when test URLs are used. This prevents network I/O while still
-    exercising the real parsing logic.
-    
+    """Monkeypatch feedparser.parse to return pre-parsed objects from
+    static XML files.
+
+    This fixture intercepts feedparser.parse(url) calls and returns
+    pre-parsed feed objects from static XML files when test URLs are used.
+    This prevents network I/O while still exercising the real parsing logic.
+
     Test URL mapping:
     - http://test/feed1 -> normal_feed.xml
     - http://test/feed2 -> minimal_feed.xml
@@ -272,40 +279,45 @@ def mock_feedparser_parse(monkeypatch):
     - http://test/feed4 -> malformed_feed.xml
     - http://test/feed5 -> future_episodes_feed.xml
     - http://test/complex -> complex_feed.xml
-    
+
     For any other URL, the original feedparser.parse is called.
     """
     original_parse = feedparser.parse
-    
-    def mock_parse(url_or_file, etag=None, modified=None, agent=None, referrer=None, handlers=None, request_headers=None, response_headers=None, resolve_relative_uris=None, sanitize_html=None):
-        """Mock feedparser.parse that returns pre-parsed objects for test URLs."""
+
+    def mock_parse(url_or_file, etag=None, modified=None, agent=None,
+                   referrer=None, handlers=None, request_headers=None,
+                   response_headers=None, resolve_relative_uris=None,
+                   sanitize_html=None):
+        """Mock feedparser.parse that returns pre-parsed objects for test
+            URLs."""
         # Define the mapping of test URLs to XML files
         test_url_mapping = {
             'http://test/feed1': 'normal_feed.xml',
-            'http://test/feed2': 'minimal_feed.xml', 
+            'http://test/feed2': 'minimal_feed.xml',
             'http://test/feed3': 'empty_feed.xml',
             'http://test/feed4': 'malformed_feed.xml',
             'http://test/feed5': 'future_episodes_feed.xml',
             'http://test/complex': 'complex_feed.xml',
         }
-        
+
         # Check if this is a test URL
         if isinstance(url_or_file, str) and url_or_file in test_url_mapping:
             xml_filename = test_url_mapping[url_or_file]
             xml_file_path = FEED_FILES_DIR / xml_filename
-            
+
             if xml_file_path.exists():
                 # Parse the static XML file instead of making a network request
-                return original_parse(str(xml_file_path), 
-                                    etag=etag, 
-                                    modified=modified, 
-                                    agent=agent, 
-                                    referrer=referrer, 
-                                    handlers=handlers, 
-                                    request_headers=request_headers, 
-                                    response_headers=response_headers, 
-                                    resolve_relative_uris=resolve_relative_uris, 
-                                    sanitize_html=sanitize_html)
+                return original_parse(
+                    str(xml_file_path),
+                    etag=etag,
+                    modified=modified,
+                    agent=agent,
+                    referrer=referrer,
+                    handlers=handlers,
+                    request_headers=request_headers,
+                    response_headers=response_headers,
+                    resolve_relative_uris=resolve_relative_uris,
+                    sanitize_html=sanitize_html)
             else:
                 # If the XML file doesn't exist, return an empty feed
                 empty_feed_xml = '''<?xml version="1.0" encoding="UTF-8"?>
@@ -317,19 +329,19 @@ def mock_feedparser_parse(monkeypatch):
   </channel>
 </rss>'''
                 return feedparser.parse(empty_feed_xml)
-        
+
         # For non-test URLs, use the original feedparser.parse
-        return original_parse(url_or_file, 
-                            etag=etag, 
-                            modified=modified, 
-                            agent=agent, 
-                            referrer=referrer, 
-                            handlers=handlers, 
-                            request_headers=request_headers, 
-                            response_headers=response_headers, 
-                            resolve_relative_uris=resolve_relative_uris, 
-                            sanitize_html=sanitize_html)
-    
+        return original_parse(url_or_file,
+                              etag=etag,
+                              modified=modified,
+                              agent=agent,
+                              referrer=referrer,
+                              handlers=handlers,
+                              request_headers=request_headers,
+                              response_headers=response_headers,
+                              resolve_relative_uris=resolve_relative_uris,
+                              sanitize_html=sanitize_html)
+
     monkeypatch.setattr(feedparser, 'parse', mock_parse)
     return mock_parse
 
@@ -337,13 +349,13 @@ def mock_feedparser_parse(monkeypatch):
 @pytest.fixture
 def test_feed_urls():
     """Provide a mapping of test feed URLs to their corresponding XML files.
-    
-    This fixture provides a convenient way to access test URLs and their 
+
+    This fixture provides a convenient way to access test URLs and their
     corresponding XML files for testing purposes.
     """
     return {
         'normal_feed': 'http://test/feed1',
-        'minimal_feed': 'http://test/feed2', 
+        'minimal_feed': 'http://test/feed2',
         'empty_feed': 'http://test/feed3',
         'malformed_feed': 'http://test/feed4',
         'future_episodes_feed': 'http://test/feed5',

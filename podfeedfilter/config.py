@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import List
 import yaml
 
+
 @dataclass
 class FeedConfig:
     url: str
@@ -13,6 +14,7 @@ class FeedConfig:
     exclude: List[str] = field(default_factory=list)
     title: str | None = None
     description: str | None = None
+
 
 def load_config(path: str) -> List[FeedConfig]:
     """Parse the YAML config into a list of FeedConfig objects."""
@@ -24,7 +26,13 @@ def load_config(path: str) -> List[FeedConfig]:
         url = item["url"]
 
         # create a base output if one is defined
-        if "output" in item or item.get("include") or item.get("exclude") or item.get("title") or item.get("description"):
+        if (
+            "output" in item
+            or item.get("include")
+            or item.get("exclude")
+            or item.get("title")
+            or item.get("description")
+        ):
             feeds.append(
                 FeedConfig(
                     url=url,
