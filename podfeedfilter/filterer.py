@@ -3,6 +3,7 @@ from pathlib import Path
 import feedparser
 from feedgen.feed import FeedGenerator
 from .config import FeedConfig
+from typing import cast
 
 
 def _text_matches(text: str, keywords: list[str]) -> bool:
@@ -51,11 +52,14 @@ def process_feed(cfg: FeedConfig):
 
     if output_path.exists():
         parsed = feedparser.parse(output_path)
-        for e in parsed.entries:
-            existing_entries.append(e)
-            existing_ids.add(e.get('id') or e.get('link'))
+        for entry in parsed.entries:
+            existing_entries.append(entry)
+            entry_id = str(entry.get('id') or entry.get('link'))
+            existing_ids.add(entry_id)
+#           existing_ids.add(e.get('id') or e.get('link'))
 
     remote = feedparser.parse(cfg.url)
+    remote_feed = cast(feedparser.FeedParserDict, remote.feed)
     new_entries = []
     for entry in remote.entries:
         entry_id = entry.get('id') or entry.get('link')
@@ -71,11 +75,11 @@ def process_feed(cfg: FeedConfig):
     fg = FeedGenerator()
     fg.load_extension('podcast')
 
-    feed_title = cfg.title if cfg.title is not None else remote.feed.get('title', 'Filtered Feed')
+    feed_title = cfg.title if cfg.title is not None else remote_feed.get('title', 'Filtered Feed')
     fg.title(feed_title)
-    if remote.feed.get('link'):
-        fg.link(href=remote.feed['link'])
-    feed_description = cfg.description if cfg.description is not None else remote.feed.get('description', '')
+    if remote_feed.get('link'):
+        fg.link(href=remote_feed['link'])
+    feed_description = cfg.description if cfg.description is not None else remote_feed.get('description', '')
     fg.description(feed_description)
 
     for entry in existing_entries:

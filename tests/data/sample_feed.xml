@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Test Podcast Feed</title>
+        <description>A sample podcast feed for testing purposes</description>
+        <link>https://example.com/podcast</link>
+        <language>en</language>
+        <copyright>Copyright 2024</copyright>
+        <managingEditor>test@example.com</managingEditor>
+        <webMaster>webmaster@example.com</webMaster>
+        <lastBuildDate>Mon, 01 Jan 2024 12:00:00 GMT</lastBuildDate>
+        <category>Technology</category>
+        
+        <item>
+            <title>Episode 1: Introduction to Python</title>
+            <description>This episode covers the basics of Python programming. We discuss variables, data types, and basic syntax. Perfect for beginners starting their Python journey.</description>
+            <link>https://example.com/episode/1</link>
+            <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
+            <guid>episode-1</guid>
+            <enclosure url="https://example.com/audio/episode-1.mp3" type="audio/mpeg" length="25165824"/>
+            <category>Programming</category>
+            <author>John Doe</author>
+        </item>
+        
+        <item>
+            <title>Episode 2: Advanced Python Concepts</title>
+            <description>Deep dive into advanced Python topics including decorators, generators, and context managers. Not suitable for beginners.</description>
+            <link>https://example.com/episode/2</link>
+            <pubDate>Mon, 08 Jan 2024 12:00:00 GMT</pubDate>
+            <guid>episode-2</guid>
+            <enclosure url="https://example.com/audio/episode-2.mp3" type="audio/mpeg" length="30720000"/>
+            <category>Programming</category>
+            <author>Jane Smith</author>
+        </item>
+        
+        <item>
+            <title>Episode 3: Machine Learning Basics</title>
+            <description>Introduction to machine learning with scikit-learn. We cover supervised learning, classification, and regression.</description>
+            <link>https://example.com/episode/3</link>
+            <pubDate>Mon, 15 Jan 2024 12:00:00 GMT</pubDate>
+            <guid>episode-3</guid>
+            <enclosure url="https://example.com/audio/episode-3.mp3" type="audio/mpeg" length="28311552"/>
+            <category>Machine Learning</category>
+            <author>Dr. AI</author>
+        </item>
+        
+        <item>
+            <title>Episode 4: Boring Administrative Stuff</title>
+            <description>This episode covers boring administrative topics that most people skip. Very dry content about paperwork and procedures.</description>
+            <link>https://example.com/episode/4</link>
+            <pubDate>Mon, 22 Jan 2024 12:00:00 GMT</pubDate>
+            <guid>episode-4</guid>
+            <enclosure url="https://example.com/audio/episode-4.mp3" type="audio/mpeg" length="15728640"/>
+            <category>Administrative</category>
+            <author>Admin Person</author>
+        </item>
+        
+        <item>
+            <title>Episode 5: Web Development with Flask</title>
+            <description>Learn how to build web applications using Flask framework. We cover routing, templates, and database integration.</description>
+            <link>https://example.com/episode/5</link>
+            <pubDate>Mon, 29 Jan 2024 12:00:00 GMT</pubDate>
+            <guid>episode-5</guid>
+            <enclosure url="https://example.com/audio/episode-5.mp3" type="audio/mpeg" length="33554432"/>
+            <category>Web Development</category>
+            <author>Web Dev Expert</author>
+        </item>
+    </channel>
+</rss>

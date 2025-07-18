@@ -1,0 +1,25 @@
+# Config with splits into several outputs
+splits:
+  - name: "episodes"
+    filter:
+      include_patterns:
+        - '*episode*'
+      exclude_patterns:
+        - '*trailer*'
+    output_path: "episodes/"
+  - name: "interviews"
+    filter:
+      include_patterns:
+        - '*interview*'
+        - '*guest*'
+      exclude_patterns:
+        - '*test*'
+    output_path: "interviews/"
+  - name: "music"
+    filter:
+      include_patterns:
+        - '*.mp3'
+        - '*.wav'
+      exclude_patterns:
+        - '*spoken*'
+    output_path: "music/"

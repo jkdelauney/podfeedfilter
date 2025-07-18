@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Malformed Test Feed</title>
+    <link>https://example.com/malformed</link>
+    <description>A malformed RSS feed for testing error handling</description>
+    
+    <item>
+      <title>Episode with Missing GUID</title>
+      <link>https://example.com/malformed/missing-guid</link>
+      <description>This episode is missing a GUID</description>
+      <pubDate>Invalid Date Format</pubDate>
+      <enclosure url="https://example.com/audio/missing-guid.mp3" length="not-a-number" type="audio/mpeg"/>
+    </item>
+    
+    <item>
+      <title>Episode with Unclosed Tag</title>
+      <link>https://example.com/malformed/unclosed-tag</link>
+      <description>This episode has an unclosed description tag
+      <guid isPermaLink="false">unclosed-tag-episode</guid>
+      <pubDate>Tue, 02 Jan 2024 10:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/unclosed-tag.mp3" length="18000000" type="audio/mpeg"/>
+    </item>
+    
+    <!-- Missing closing item tag for previous episode -->
+    
+    <item>
+      <!-- Missing title tag -->
+      <link>https://example.com/malformed/missing-title</link>
+      <description>This episode is missing a title</description>
+      <guid isPermaLink="false">missing-title-episode</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <!-- Missing enclosure tag -->
+    </item>
+    
+  </channel>
+  <!-- Missing closing rss tag -->

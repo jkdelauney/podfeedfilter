@@ -1,0 +1,8 @@
+# Basic include/exclude rules
+include_patterns:
+  - '*.mp3'
+  - '*.wav'
+exclude_patterns:
+  - '*.txt'
+  - '*.md'
+

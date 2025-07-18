@@ -1,3 +1,8 @@
-feedparser
-feedgen
-PyYAML
+# Core dependencies
+feedparser>=6.0.0
+feedgen>=1.0.0
+PyYAML>=6.0.0
+
+# Testing dependencies (optional, install with: pip install -r requirements-dev.txt)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0

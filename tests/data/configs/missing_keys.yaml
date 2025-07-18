@@ -1,0 +1,5 @@
+# Config with missing keys
+include_patterns:
+  - '*.mp3'
+# Missing exclude_patterns key
+# Missing required configuration

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Test Podcast</title>
+    <link>https://example.com/podcast</link>
+    <description>A test podcast with various episode types</description>
+    <language>en-us</language>
+    <copyright>2024 Test Podcast</copyright>
+    <itunes:author>Test Author</itunes:author>
+    <itunes:summary>A test podcast with various episode types</itunes:summary>
+    <itunes:category text="Technology"/>
+    
+    <item>
+      <title>Latest Tech Trends 2024</title>
+      <link>https://example.com/podcast/tech-trends-2024</link>
+      <description>Discussion about the latest technology trends shaping 2024</description>
+      <author>tech@example.com (Tech Editor)</author>
+      <guid isPermaLink="false">tech-trends-2024</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/tech-trends-2024.mp3" length="25000000" type="audio/mpeg"/>
+      <itunes:author>Tech Editor</itunes:author>
+      <itunes:summary>Discussion about the latest technology trends shaping 2024</itunes:summary>
+      <itunes:duration>00:42:30</itunes:duration>
+      <category>Technology</category>
+    </item>
+    
+    <item>
+      <title>Election Analysis: What Voters Really Want</title>
+      <link>https://example.com/podcast/election-analysis-2024</link>
+      <description>In-depth analysis of voter preferences and political trends</description>
+      <author>politics@example.com (Political Correspondent)</author>
+      <guid isPermaLink="false">election-analysis-2024</guid>
+      <pubDate>Sun, 31 Dec 2023 15:30:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/election-analysis-2024.mp3" length="30000000" type="audio/mpeg"/>
+      <itunes:author>Political Correspondent</itunes:author>
+      <itunes:summary>In-depth analysis of voter preferences and political trends</itunes:summary>
+      <itunes:duration>00:51:20</itunes:duration>
+      <category>Politics</category>
+    </item>
+    
+    <item>
+      <title>Special Offer: Premium Tools for Creators</title>
+      <link>https://example.com/podcast/premium-tools-ad</link>
+      <description>Sponsored content about premium creator tools and services</description>
+      <author>ads@example.com (Advertising Team)</author>
+      <guid isPermaLink="false">premium-tools-ad</guid>
+      <pubDate>Sat, 30 Dec 2023 12:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/audio/premium-tools-ad.mp3" length="5000000" type="audio/mpeg"/>
+      <itunes:author>Advertising Team</itunes:author>
+      <itunes:summary>Sponsored content about premium creator tools and services</itunes:summary>
+      <itunes:duration>00:08:45</itunes:duration>
+      <category>Advertisement</category>
+    </item>
+    
+  </channel>
+</rss>
