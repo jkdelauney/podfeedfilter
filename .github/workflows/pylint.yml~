@@ -2,6 +2,9 @@ name: Pylint
 
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -21,10 +24,4 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --output=lint.txt || true
-        cat lint.txt
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: lint.txt
-        path: lint.txt
+        pylint $(git ls-files '*.py')
