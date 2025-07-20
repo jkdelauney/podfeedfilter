@@ -1,3 +1,10 @@
+"""Core podcast feed processing and filtering functionality.
+
+Provides process_feed() function to download RSS feeds, filter episodes
+based on include/exclude keywords, and generate filtered output feeds.
+Includes helper functions _text_matches(), _entry_passes(), and
+_copy_entry() for content matching and feed generation.
+"""
 from __future__ import annotations
 from pathlib import Path
 import feedparser

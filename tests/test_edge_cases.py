@@ -1,3 +1,11 @@
+"""Edge case tests for podfeedfilter functionality.
+
+Tests unusual or boundary conditions including empty feeds, malformed
+RSS content, network failures, filesystem permissions, and other
+exceptional scenarios that could cause failures. Ensures robust
+handling of unexpected input and error conditions.
+"""
+
 """
 Edge case tests for podcast filter application.
 

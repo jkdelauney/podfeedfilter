@@ -1,3 +1,11 @@
+"""Integration tests for end-to-end feed processing workflows.
+
+Tests complete process_feed() functionality including feed downloading,
+episode filtering, output file generation, and appending behavior.
+Uses mock feeds to validate entire processing pipeline from
+configuration loading through final RSS output creation.
+"""
+
 """
 Integration tests for process_feed function.
 

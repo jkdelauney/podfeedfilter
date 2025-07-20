@@ -1,4 +1,10 @@
+"""Configuration loading and data structures for podcast feeds.
 
+Defines the FeedConfig dataclass for individual feed configurations
+and provides load_config() function to parse YAML files. Supports
+feed splitting where single source URLs can generate multiple filtered
+output files with different include/exclude criteria.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

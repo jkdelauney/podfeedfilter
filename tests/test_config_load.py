@@ -1,11 +1,9 @@
-"""
-Unit tests for config.load_config function.
+"""Unit tests for configuration loading and parsing.
 
-Test scenarios:
-• Correct parsing of base output + splits into multiple FeedConfig objects.
-• Defaults for optional fields.
-• Handling empty feeds: list.
-• Error conditions (missing url, invalid YAML) expecting exceptions.
+Comprehensive tests for config.load_config() function covering
+FeedConfig object creation from YAML, base output plus splits parsing,
+default value handling, empty configuration scenarios, and error
+conditions with malformed or missing configuration data.
 """
 import pytest
 import yaml

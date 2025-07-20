@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""
-Integration test script for process_feed appending functionality.
-This tests the step 9 requirements: process_feed appending behavior.
+"""Integration tests for feed processing and episode appending.
+
+Standalone test script that validates process_feed() correctly appends
+new episodes to existing output files without duplication. Uses
+monkeypatched feedparser.parse() to simulate feed updates and
+verify proper appending behavior with filtered content.
 """
 
 import tempfile

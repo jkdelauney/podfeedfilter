@@ -1,3 +1,11 @@
+"""Configuration fixture tests for load_config functionality.
+
+Validates config.load_config() using pre-built YAML test fixtures.
+Tests various configuration scenarios including basic include/exclude
+patterns, feed splits, missing keys, malformed YAML, and complex
+multi-feed setups to ensure robust configuration parsing.
+"""
+
 """
 Example tests demonstrating usage of config fixtures.
 """

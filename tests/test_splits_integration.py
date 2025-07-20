@@ -1,3 +1,11 @@
+"""Integration tests for feed splitting functionality.
+
+Validates splitting single podcast feeds into multiple filtered outputs
+with different include/exclude criteria. Tests complex configurations
+where one source feed generates multiple targeted output files with
+distinct filtering rules and content organization.
+"""
+
 #!/usr/bin/env python3
 """
 Integration test for splits processing functionality.

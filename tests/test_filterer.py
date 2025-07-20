@@ -1,20 +1,9 @@
-"""
-Unit tests for filterer helper functions.
+"""Unit tests for feed filtering helper functions.
 
-Tests the _text_matches and _entry_passes functions with parametrized cases
-verifying case-insensitive matching, include-only/exclude-only/combined rules,
-and proper rejection when both include and exclude lists are present.
-
-Test Coverage:
-- Case-insensitive matching for both functions
-- Include-only filtering rules
-- Exclude-only filtering rules
-- Combined include/exclude rules
-- Proper rejection when both include and exclude lists are present
-- Edge cases (empty lists, missing fields, whitespace handling)
-- Content aggregation across title, description, and summary fields
-- Unicode and special character handling
-- Multiple keyword matching (any match should pass for includes)
+Comprehensive tests for _text_matches(), _entry_passes(), and
+_copy_entry() functions covering case-insensitive matching, include/
+exclude rule combinations, content aggregation across episode fields,
+Unicode handling, and edge cases with empty or malformed data.
 """
 import pytest
 import feedparser

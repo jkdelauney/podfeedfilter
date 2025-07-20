@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""
-CLI tests for podfeedfilter __main__.py module.
+"""Command-line interface tests for podfeedfilter main module.
 
-This module tests Step 11 requirements:
-- Invoke `python -m podfeedfilter -c <config>` via `subprocess.run`
-- Call `main()` directly with `monkeypatch.setattr(sys, 'argv', [...])`
-- Capture stdout/stderr with `capsys`
-- Ensure command exits cleanly and creates expected files under tmp_path
+Tests CLI functionality using both subprocess.run() for external
+command invocation and direct main() function calls with sys.argv
+monkeypatching. Validates argument parsing, config file handling,
+error conditions, and proper exit codes with output verification.
 """
 
 import subprocess

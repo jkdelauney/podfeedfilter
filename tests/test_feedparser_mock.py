@@ -1,3 +1,11 @@
+"""Feedparser mocking utilities and validation tests.
+
+Tests the mock_feedparser_parse fixture functionality to ensure
+network-free testing with static XML feeds. Validates URL mapping,
+feed parsing accuracy, and proper monkeypatching behavior for
+isolated unit testing without external dependencies.
+"""
+
 """
 Test file demonstrating the usage of the mock_feedparser_parse fixture.
 

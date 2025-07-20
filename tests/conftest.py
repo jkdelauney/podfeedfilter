@@ -1,5 +1,9 @@
-"""
-Shared pytest fixtures and test helpers for podfeedfilter tests.
+"""Shared pytest fixtures and test utilities for podfeedfilter.
+
+Provides comprehensive test fixtures including temporary config files,
+mock RSS feeds, feedparser.parse() monkeypatching for network-free
+testing, and helper functions for creating test data. Central location
+for all test setup and configuration utilities.
 """
 import os
 import tempfile

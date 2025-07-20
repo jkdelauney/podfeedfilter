@@ -1,3 +1,9 @@
+"""Command-line interface for podfeedfilter.
+
+Serves as the main entry point when running `python -m podfeedfilter`.
+Provides the main() function that parses command-line arguments,
+loads YAML configuration files, and processes each configured feed.
+"""
 import argparse
 from .config import load_config
 from .filterer import process_feed
