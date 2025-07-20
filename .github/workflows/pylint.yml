@@ -5,6 +5,22 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idpermissions
+    permissions:
+#     actions: read|write|none
+#     attestations: read|write|none
+#     checks: read|write|none
+      contents: read
+#     deployments: read|write|none
+#     discussions: read|write|none
+#     id-token: write|none
+#     issues: read|write|none
+#     models: read|none
+#     packages: read|write|none
+#     pages: read|write|none
+#     pull-requests: read|write|none
+#     security-events: read|write|none
+#     statuses: read|write|none
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.13.5"]
@@ -21,10 +37,10 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --output=lint.txt || true
-        cat lint.txt
+        pylint $(git ls-files '*.py') --output=lint_${{ matrix.python-version }}.txt || true
+        cat lint_${{ matrix.python-version }}.txt
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: lint.txt
-        path: lint.txt
+        name: lint_${{ matrix.python-version }}.txt
+        path: lint_${{ matrix.python-version }}.txt
