@@ -9,7 +9,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.13.5"]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -23,7 +23,8 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --generate-rcfile > pylintrc_dump
+        pylint --version > pylintrc_dump
+        pylint --generate-rcfile >> pylintrc_dump
         cat pylintrc_dump
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
