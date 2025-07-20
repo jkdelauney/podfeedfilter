@@ -42,5 +42,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: lint.txt
-        path: lint.txt
+        name: lint_${{ matrix.python-version }}.txt
+        path: lint_${{ matrix.python-version }}.txt
