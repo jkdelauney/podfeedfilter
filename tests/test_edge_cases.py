@@ -1,26 +1,18 @@
-"""Edge case tests for podfeedfilter functionality.
-
-Tests unusual or boundary conditions including empty feeds, malformed
-RSS content, network failures, filesystem permissions, and other
-exceptional scenarios that could cause failures. Ensures robust
-handling of unexpected input and error conditions.
-"""
-
-"""
-Edge case tests for podcast filter application.
+"""Edge case tests for podcast filter application.
 
 This module contains tests for various edge cases and error conditions:
 - Feed with no matching episodes → output file not written or empty
 - Pre-existing output file with malformed XML → ensure graceful failure or
   overwrite
 - Very long include/exclude lists performance smoke test
-- Invalid enclosure fields to ensure _copy_entry tolerates missing length/type
+- Invalid enclosure fields to ensure _copy_entry tolerates missing
+  length/type
 """
 
+from pathlib import Path
+import time
 import pytest
 import feedparser
-import time
-from pathlib import Path
 from feedgen.feed import FeedGenerator
 from podfeedfilter.filterer import process_feed, _copy_entry, _entry_passes, _text_matches
 from podfeedfilter.config import FeedConfig
@@ -165,7 +157,10 @@ class TestMalformedXML:
         # preserved
         assert len(output_feed.entries) >= 1
         # The latest entry should be the tech episode
-        tech_episodes = [e for e in output_feed.entries if 'tech' in e.title.lower()]
+        tech_episodes = [
+            e for e in output_feed.entries
+            if 'tech' in str(e.get('title', '')).lower()
+        ]
         assert len(tech_episodes) == 1
         assert tech_episodes[0].title == "Latest Tech Trends 2024"
 
@@ -235,7 +230,8 @@ class TestPerformanceWithLongLists:
         assert len(output_feed.entries) == 1
         assert output_feed.entries[0].title == "Latest Tech Trends 2024"
 
-    def test_performance_with_large_feed(self, mock_feedparser_parse, tmp_path):
+    def test_performance_with_large_feed(self, mock_feedparser_parse,
+                                         tmp_path):
         """Test performance with a large number of episodes."""
         # Create a mock feed with many episodes
         large_feed_data = {

@@ -5,13 +5,9 @@ Tests various configuration scenarios including basic include/exclude
 patterns, feed splits, missing keys, malformed YAML, and complex
 multi-feed setups to ensure robust configuration parsing.
 """
-
-"""
-Example tests demonstrating usage of config fixtures.
-"""
+from pathlib import Path
 import pytest
 import yaml
-from pathlib import Path
 
 
 def test_basic_include_exclude_config(basic_include_exclude_config):

@@ -1,13 +1,4 @@
-"""Integration tests for end-to-end feed processing workflows.
-
-Tests complete process_feed() functionality including feed downloading,
-episode filtering, output file generation, and appending behavior.
-Uses mock feeds to validate entire processing pipeline from
-configuration loading through final RSS output creation.
-"""
-
-"""
-Integration tests for process_feed function.
+"""Integration tests for process_feed function.
 
 These tests use tmp_path for outputs and monkeypatched feeds to test:
 - Output file creation
@@ -16,9 +7,9 @@ These tests use tmp_path for outputs and monkeypatched feeds to test:
 - Order preservation
 """
 
+from pathlib import Path
 import pytest
 import feedparser
-from pathlib import Path
 from podfeedfilter.filterer import process_feed
 from podfeedfilter.config import FeedConfig
 

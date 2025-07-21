@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Command-line interface tests for podfeedfilter main module.
 
 Tests CLI functionality using both subprocess.run() for external
@@ -6,7 +5,6 @@ command invocation and direct main() function calls with sys.argv
 monkeypatching. Validates argument parsing, config file handling,
 error conditions, and proper exit codes with output verification.
 """
-
 import subprocess
 import sys
 import tempfile

@@ -1,14 +1,4 @@
-"""Integration tests for feed splitting functionality.
-
-Validates splitting single podcast feeds into multiple filtered outputs
-with different include/exclude criteria. Tests complex configurations
-where one source feed generates multiple targeted output files with
-distinct filtering rules and content organization.
-"""
-
-#!/usr/bin/env python3
-"""
-Integration test for splits processing functionality.
+"""Integration test for splits processing functionality.
 This tests the step 10 requirements: splits producing 3 output files.
 
 Test requirements:
@@ -17,10 +7,9 @@ Test requirements:
 3. Assert each contains correct subset per its include/exclude rules
 4. Edge case: one split with only exclude list (no include patterns)
 """
-
+from pathlib import Path
 import tempfile
 import feedparser
-from pathlib import Path
 from podfeedfilter.config import FeedConfig
 from podfeedfilter.filterer import process_feed
 

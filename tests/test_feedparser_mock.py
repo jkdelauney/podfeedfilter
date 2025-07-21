@@ -5,13 +5,6 @@ network-free testing with static XML feeds. Validates URL mapping,
 feed parsing accuracy, and proper monkeypatching behavior for
 isolated unit testing without external dependencies.
 """
-
-"""
-Test file demonstrating the usage of the mock_feedparser_parse fixture.
-
-This test file shows how to use the mock_feedparser_parse fixture to test
-feed processing functionality without making actual network requests.
-"""
 import pytest
 import feedparser
 from podfeedfilter.filterer import process_feed
