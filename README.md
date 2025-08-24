@@ -46,6 +46,22 @@ when an `include` list is provided, it contains at least one of those words in
 its title or description. When a feed defines multiple `splits`, each split is
 treated as a separate output file with its own include and exclude rules.
 
+### Bandwidth Optimization Configuration
+
+By default, all feeds use HTTP conditional requests with `Last-Modified` headers to avoid unnecessary downloads. This can be disabled per-feed if needed:
+
+```yaml
+feeds:
+  - url: "https://example.com/unreliable-feed.rss"
+    output: "unreliable.xml"
+    check_modified: false  # Always download this feed
+  - url: "https://example.com/normal-feed.rss"
+    output: "normal.xml"
+    # check_modified: true (default - uses conditional requests)
+```
+
+The `check_modified` option can also be set on individual splits to override the parent feed's setting.
+
 ## Requirements
 
 - Python 3.10+ (uses modern type hint syntax)
@@ -62,9 +78,21 @@ python -m podfeedfilter -c feeds.yaml
 Running the command multiple times will append only newly discovered episodes
 to the output files. It is safe to invoke from a cron job.
 
+### Bandwidth Optimization
+
+The application automatically uses HTTP conditional requests with `Last-Modified` headers to reduce bandwidth usage. When a feed server supports `Last-Modified` headers:
+
+- The application saves the server's `Last-Modified` timestamp as the output file's modification time
+- On subsequent runs, it sends an `If-Modified-Since` header with the previous timestamp
+- If the feed hasn't changed (HTTP 304 Not Modified), no download or processing occurs
+- This significantly reduces bandwidth usage and processing time for unchanged feeds
+
+This optimization is enabled by default and works transparently without configuration changes.
+
 ## Command line options
 
-- `-c/--config` – path to the configuration YAML file (default `feeds.yaml`).
+- `-c/--config` – path to the configuration YAML file (default `feeds.yaml`)
+- `-n/--no-check-modified` – disable Last-Modified header checking and always fetch feeds (useful for debugging or forcing updates)
 
 ## Development
 
@@ -118,4 +146,3 @@ pip install pytest pytest-cov
 - `tests/` – test suite directory.
 - `AGENT.md` – **AI assistant documentation** (architecture, guidelines, testing)
 - `EDGE_CASE_TESTS.md` – edge case testing documentation.
-

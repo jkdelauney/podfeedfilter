@@ -7,10 +7,14 @@ _copy_entry() for content matching and feed generation.
 """
 from __future__ import annotations
 from pathlib import Path
+from typing import cast
+import email.utils
+import os
+import time
 import feedparser
+import requests
 from feedgen.feed import FeedGenerator
 from .config import FeedConfig
-from typing import cast
 
 
 def _text_matches(text: str, keywords: list[str]) -> bool:
@@ -35,6 +39,39 @@ def _entry_passes(entry: feedparser.FeedParserDict, include: list[str],
     return True
 
 
+def _conditional_fetch(url: str, since: float | None) -> tuple[bytes | None, float | None]:
+    """Fetch URL with conditional request using If-Modified-Since header.
+
+    Args:
+        url: The URL to fetch
+        since: Timestamp (Unix time) to use for If-Modified-Since header, or None
+
+    Returns:
+        Tuple of (content_bytes, last_modified_timestamp) if content was modified,
+        or (None, None) if content was not modified (304 response)
+    """
+    headers = {}
+    if since is not None:
+        headers["If-Modified-Since"] = email.utils.formatdate(since, usegmt=True)
+
+    resp = requests.get(url, headers=headers, timeout=30)
+    if resp.status_code == 304:
+        return None, None
+
+    resp.raise_for_status()
+
+    lm_str = resp.headers.get("Last-Modified")
+    lm_ts = None
+    if lm_str:
+        try:
+            lm_ts = email.utils.parsedate_to_datetime(lm_str).timestamp()
+        except (ValueError, TypeError):
+            # If we can't parse the Last-Modified header, ignore it
+            pass
+
+    return resp.content, lm_ts
+
+
 def _copy_entry(fe, entry: feedparser.FeedParserDict) -> None:
     """Copy relevant fields from a parsed entry into a feedgen entry."""
     fe.id(entry.get("id", entry.get("link")))
@@ -57,19 +94,44 @@ def _copy_entry(fe, entry: feedparser.FeedParserDict) -> None:
             fe.enclosure(enc.get("href"), enc.get("length"), enc.get("type"))
 
 
-def process_feed(cfg: FeedConfig):
+def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
+    """Process a single feed: download, filter, and generate output feed."""
     output_path = Path(cfg.output)
     existing_entries: list[feedparser.FeedParserDict] = []
     existing_ids: set[str] = set()
 
+    # Determine if we should use conditional fetching
+    use_conditional_fetch = cfg.check_modified and not no_check_modified
+
+    # Get existing file modification time for conditional requests
+    file_mtime = None
     if output_path.exists():
+        file_mtime = output_path.stat().st_mtime if use_conditional_fetch else None
         parsed = feedparser.parse(output_path)
         for entry in parsed.entries:
             existing_entries.append(entry)
             entry_id = str(entry.get('id') or entry.get('link'))
             existing_ids.add(entry_id)
 
-    remote = feedparser.parse(cfg.url)
+    # Fetch the remote feed (conditionally if enabled)
+    last_modified_ts = None
+    if use_conditional_fetch:
+        # Try conditional fetch
+        try:
+            content, last_modified_ts = _conditional_fetch(cfg.url, file_mtime)
+            if content is None:
+                # Feed hasn't been modified, nothing to do
+                return
+            remote = feedparser.parse(content)
+        except (requests.RequestException, ValueError) as e:
+            # Fallback to regular fetch if conditional fetch fails
+            print(f"Warning: Conditional fetch failed for {cfg.url}: {e}")
+            print("Falling back to regular fetch...")
+            remote = feedparser.parse(cfg.url)
+    else:
+        # Use regular fetch
+        remote = feedparser.parse(cfg.url)
+
     remote_feed = cast(feedparser.FeedParserDict, remote.feed)
     new_entries = []
     for entry in remote.entries:
@@ -107,3 +169,9 @@ def process_feed(cfg: FeedConfig):
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fg.rss_file(str(output_path))
+
+    # Set the output file's modification time to match Last-Modified header
+    # This enables conditional requests on subsequent runs
+    if use_conditional_fetch:
+        timestamp = last_modified_ts if last_modified_ts is not None else time.time()
+        os.utime(output_path, (timestamp, timestamp))
