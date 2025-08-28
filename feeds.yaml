@@ -19,3 +19,9 @@ feeds:
     description: "Episodes without politics"
     exclude:
       - "politics"
+  # Example: Disable bandwidth optimization for unreliable feeds
+  - url: "https://example.com/unreliable-feed.rss"
+    output: "unreliable_filtered.xml"
+    check_modified: false  # Always fetch this feed (bypasses Last-Modified caching)
+    exclude:
+      - "advertisement"
