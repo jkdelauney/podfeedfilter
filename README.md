@@ -87,6 +87,8 @@ The application automatically uses HTTP conditional requests with `Last-Modified
 - If the feed hasn't changed (HTTP 304 Not Modified), no download or processing occurs
 - This significantly reduces bandwidth usage and processing time for unchanged feeds
 
+**Smart Timestamp Management**: Output file timestamps are only updated when new episodes are actually added to the filtered feed. This ensures that split feeds maintain meaningful "last updated" times that reflect when content was last changed, not just when the source feed was checked.
+
 This optimization is enabled by default and works transparently without configuration changes.
 
 ## Command line options

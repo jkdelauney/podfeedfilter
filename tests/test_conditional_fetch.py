@@ -375,29 +375,81 @@ class TestProcessFeedConditional:
         assert "If-Modified-Since" not in responses.calls[0].request.headers
 
     @responses.activate
-    @freeze_time("2024-01-02 15:00:00")
-    def test_process_feed_timestamp_fallback_to_current_time(self):
-        """Test that current time is used when Last-Modified is not provided."""
-        frozen_time = time.time()  # Current time in frozen context
-
+    def test_process_feed_timestamp_preserved_when_no_new_episodes(self):
+        """Test that timestamp is preserved when feed updates but no new episodes match filters."""
+        # Create existing output file with existing episode
+        existing_feed_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Test Podcast</title>
+    <description>A test podcast</description>
+    
+    <item>
+      <title>Episode 1: Tech Discussion</title>
+      <link>https://example.com/ep1</link>
+      <guid>ep1</guid>
+      <description>A tech episode</description>
+    </item>
+  </channel>
+</rss>'''
+        self.output_path.write_text(existing_feed_xml)
+        original_time = 1704110400.0  # Jan 1, 2024 12:00:00 GMT
+        os.utime(self.output_path, (original_time, original_time))
+        
+        # Remote feed has a new episode, but it doesn't match our filter
+        updated_feed_content = b'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Test Podcast</title>
+    <link>https://example.com/podcast</link>
+    <description>A test podcast</description>
+    
+    <item>
+      <title>Episode 2: Sports Talk</title>
+      <link>https://example.com/ep2</link>
+      <guid>ep2</guid>
+      <description>A sports episode</description>
+    </item>
+    
+    <item>
+      <title>Episode 1: Tech Discussion</title>
+      <link>https://example.com/ep1</link>
+      <guid>ep1</guid>
+      <description>A tech episode</description>
+    </item>
+  </channel>
+</rss>'''
+        
         responses.add(
             responses.GET,
             self.url,
-            body=SAMPLE_RSS_CONTENT,
-            status=200  # No Last-Modified header
+            body=updated_feed_content,
+            headers={"Last-Modified": "Mon, 02 Jan 2024 12:00:00 GMT"},
+            status=200
         )
-
+        
         config = FeedConfig(
             url=self.url,
             output=str(self.output_path),
+            include=["tech"],  # Only tech episodes - sports episode won't match
             check_modified=True
         )
-
+        
         process_feed(config)
-
-        # Verify file was timestamped with current time
+        
+        # File should be updated (rewritten) but timestamp should NOT be set to Last-Modified
+        # because no new episodes were actually added to this filtered feed
         assert self.output_path.exists()
-        assert abs(self.output_path.stat().st_mtime - frozen_time) < 1.0  # Within 1 second
+        # Timestamp should NOT be the Last-Modified time since no new episodes were added
+        last_modified_timestamp = 1704196800.0  # Jan 2, 2024 12:00:00 GMT
+        assert self.output_path.stat().st_mtime != last_modified_timestamp
+        # File was rewritten so timestamp changed from original, but not set to Last-Modified
+        assert self.output_path.stat().st_mtime != original_time
+        
+        # Verify content is still the same (only tech episode)
+        content = self.output_path.read_text()
+        assert "Episode 1: Tech Discussion" in content
+        assert "Episode 2: Sports Talk" not in content  # Filtered out
 
     @responses.activate
     def test_process_feed_conditional_with_filtering(self):

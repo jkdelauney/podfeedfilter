@@ -169,9 +169,13 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fg.rss_file(str(output_path))
-
+    
     # Set the output file's modification time to match Last-Modified header
-    # This enables conditional requests on subsequent runs
-    if use_conditional_fetch:
-        timestamp = last_modified_ts if last_modified_ts is not None else time.time()
-        os.utime(output_path, (timestamp, timestamp))
+    # ONLY when new episodes were actually added to the output file
+    if use_conditional_fetch and new_entries:
+        # Only update timestamp when we have new episodes to add
+        if last_modified_ts is not None:
+            # Use server's Last-Modified timestamp
+            os.utime(output_path, (last_modified_ts, last_modified_ts))
+        # If no Last-Modified header, preserve existing timestamp by not updating it
+        # This ensures the file timestamp reflects when it was last meaningfully updated
