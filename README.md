@@ -74,6 +74,7 @@ Each output feed can be marked as private or public using the `private` field:
 - `private: false` - Creates a public feed without the iTunes block tag
 - The `private` setting can be configured independently for main feeds and each split
 - If not specified, feeds default to private for security
+- **Type Safety**: The private field accepts any value and converts it to boolean (e.g., `0`, `""`, `[]`, `null` become `false`; `1`, `"yes"`, `[1,2,3]` become `true`)
 
 ## Requirements
 

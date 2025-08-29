@@ -51,7 +51,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     title=item.get("title"),
                     description=item.get("description"),
                     check_modified=item.get("check_modified", True),
-                    private=item.get("private", True),
+                    private=bool(item.get("private", True)),
                 )
             )
 
@@ -67,7 +67,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     title=split.get("title"),
                     description=split.get("description"),
                     check_modified=split.get("check_modified", item.get("check_modified", True)),
-                    private=split.get("private", True),
+                    private=bool(split.get("private", True)),
                 )
             )
 
