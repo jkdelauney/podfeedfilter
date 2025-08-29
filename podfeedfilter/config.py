@@ -20,6 +20,7 @@ class FeedConfig:
     exclude: List[str] = field(default_factory=list)
     title: str | None = None
     description: str | None = None
+    private: bool = True
 
 
 def load_config(path: str) -> List[FeedConfig]:
@@ -47,6 +48,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     exclude=item.get("exclude", []) or [],
                     title=item.get("title"),
                     description=item.get("description"),
+                    private=item.get("private", True),
                 )
             )
 
@@ -61,6 +63,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     exclude=split.get("exclude", []) or [],
                     title=split.get("title"),
                     description=split.get("description"),
+                    private=split.get("private", True),
                 )
             )
 
