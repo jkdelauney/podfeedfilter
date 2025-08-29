@@ -8,6 +8,7 @@ Tests cover:
 """
 
 import pytest
+import re
 import tempfile
 import feedparser
 from pathlib import Path
@@ -151,7 +152,9 @@ class TestPrivateITunesBlockGeneration:
         
         assert output_file.exists()
         content = output_file.read_text()
-        assert '<itunes:block>yes</itunes:block>' not in content
+        # Use regex to check for absence of <itunes:block> tag, ignoring whitespace and case
+        itunes_block_pattern = re.compile(r'<\s*itunes:block\s*>\s*yes\s*</\s*itunes:block\s*>', re.IGNORECASE)
+        assert not itunes_block_pattern.search(content)
         # iTunes namespace should still be present (podcast extension loaded)
         assert 'xmlns:itunes' in content
     
