@@ -3,6 +3,7 @@ feeds:
     output: "podcast1_filtered.xml"
     exclude:
       - "politics"
+    private: true  # Default: private feed (adds iTunes block tag)
     splits:
       - output: "podcast1_tech.xml"
         title: "Podcast 1 Tech"
@@ -10,9 +11,11 @@ feeds:
         include:
           - "python"
           - "code"
+        private: false  # This split will be public
       - output: "podcast1_misc.xml"
         exclude:
           - "advertisement"
+        # private defaults to true
   - url: "https://example.com/podcast2.rss"
     output: "podcast2_filtered.xml"
     title: "Podcast 2 Filtered"
@@ -25,3 +28,4 @@ feeds:
     check_modified: false  # Always fetch this feed (bypasses Last-Modified caching)
     exclude:
       - "advertisement"
+    private: false  # This feed will be public

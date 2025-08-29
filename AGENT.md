@@ -10,6 +10,8 @@
 - **Feed splitting**: Create multiple filtered outputs from a single source feed
 - **Append-only operation**: Safely add new episodes without duplication
 - **Metadata customization**: Override feed titles and descriptions
+- **Privacy control**: Mark feeds as private (iTunes block tag) or public
+- **CLI overrides**: Command-line options to override configuration settings
 - **Cron-friendly**: Safe for automated scheduled execution
 
 ## Architecture
@@ -78,6 +80,7 @@ class FeedConfig:
     exclude: List[str]          # Exclude keywords
     title: str | None           # Custom feed title
     description: str | None     # Custom feed description
+    private: bool = True        # Privacy control (adds iTunes block tag)
 ```
 
 ### `process_feed()` (filterer.py)
@@ -107,18 +110,21 @@ feeds:
     description: "Only tech episodes"
 ```
 
-### Advanced Configuration with Splits
+### Advanced Configuration with Splits and Privacy
 ```yaml
 feeds:
   - url: "https://example.com/podcast.rss"
     output: "main_filtered.xml"
     exclude: ["politics"]
+    private: true  # Private by default
     splits:
       - output: "tech_only.xml"
         title: "Tech Episodes Only"
         include: ["tech", "programming"]
+        private: false  # This split is public
       - output: "no_ads.xml"
         exclude: ["advertisement", "sponsored"]
+        # private defaults to true (inherited)
 ```
 
 ## Testing Framework
@@ -164,6 +170,12 @@ python -m podfeedfilter -c feeds.yaml
 
 # Custom config file
 python -m podfeedfilter -c /path/to/config.yaml
+
+# Override all feeds to be private
+python -m podfeedfilter -c feeds.yaml --private true
+
+# Override all feeds to be public
+python -m podfeedfilter -c feeds.yaml --private false
 
 # Cron job friendly (no output unless errors)
 python -m podfeedfilter -c feeds.yaml >/dev/null 2>&1

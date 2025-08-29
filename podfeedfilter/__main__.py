@@ -20,9 +20,21 @@ def main() -> None:
         "-n", "--no-check-modified", action="store_true",
         help="Disable Last-Modified header checking and always fetch feeds"
     )
+    parser.add_argument(
+        "-p", "--private", choices=["true", "false"],
+        help="Override private setting for all feeds (true/false)"
+    )
     args = parser.parse_args()
     feeds = load_config(args.config)
+
+    # Apply CLI private override if specified
+    private_override = None
+    if args.private is not None:
+        private_override = args.private.lower() == "true"
+
     for feed in feeds:
+        if private_override is not None:
+            feed.private = private_override
         process_feed(feed, no_check_modified=args.no_check_modified)
 
 

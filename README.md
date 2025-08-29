@@ -22,6 +22,7 @@ feeds:
     output: "podcast1_filtered.xml"
     exclude:
       - "politics"
+    private: true  # Add iTunes block tag (default: true)
     # additional splits using their own rules
     splits:
       - output: "podcast1_tech.xml"
@@ -30,15 +31,18 @@ feeds:
         include:
           - "python"
           - "code"
+        private: false  # This split will be public
       - output: "podcast1_misc.xml"
         exclude:
           - "advertisement"
+        # private defaults to true
   - url: "https://example.com/podcast2.rss"
     output: "podcast2_filtered.xml"
     title: "Podcast 2 Filtered"
     description: "Episodes without politics"
     exclude:
       - "politics"
+    private: false  # Make this feed public
 ```
 
 An episode is kept if it does not match any words in the `exclude` list and,
@@ -61,6 +65,16 @@ feeds:
 ```
 
 The `check_modified` option can also be set on individual splits to override the parent feed's setting.
+
+### Privacy Control
+
+Each output feed can be marked as private or public using the `private` field:
+
+- `private: true` (default) - Adds `<itunes:block>yes</itunes:block>` to tell podcast directories not to list the feed if discovered
+- `private: false` - Creates a public feed without the iTunes block tag
+- The `private` setting can be configured independently for main feeds and each split
+- If not specified, feeds default to private for security
+- **Type Safety**: The private field accepts any value and converts it to boolean (e.g., `0`, `""`, `[]`, `null` become `false`; `1`, `"yes"`, `[1,2,3]` become `true`)
 
 ## Requirements
 
@@ -95,6 +109,20 @@ This optimization is enabled by default and works transparently without configur
 
 - `-c/--config` – path to the configuration YAML file (default `feeds.yaml`)
 - `-n/--no-check-modified` – disable Last-Modified header checking and always fetch feeds (useful for debugging or forcing updates)
+- `-p/--private {true,false}` – override private setting for all feeds in the config file
+
+### Privacy Override Examples
+
+```bash
+# Make all feeds private regardless of config settings
+python -m podfeedfilter -c feeds.yaml --private true
+
+# Make all feeds public regardless of config settings
+python -m podfeedfilter -c feeds.yaml --private false
+
+# Use config file settings (default behavior)
+python -m podfeedfilter -c feeds.yaml
+```
 
 ## Development
 

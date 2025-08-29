@@ -160,6 +160,10 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
     )
     fg.description(feed_description)
 
+    # Add iTunes block tag if private is True (default)
+    if cfg.private:
+        fg.podcast.itunes_block('yes')
+
     for entry in existing_entries:
         fe = fg.add_entry()
         _copy_entry(fe, entry)
