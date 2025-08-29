@@ -9,9 +9,9 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 import pytest
 import yaml
-from unittest.mock import patch
 
 from podfeedfilter.__main__ import main
 
@@ -33,7 +33,7 @@ def test_cli_subprocess_with_basic_config(tmp_path):
     }
 
     config_path = tmp_path / "test_config.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, 'w', encoding="utf-8") as f:
         yaml.dump(config_content, f)
 
     # Run the CLI command via subprocess
@@ -82,14 +82,14 @@ def test_cli_subprocess_with_splits_config(tmp_path):
     }
 
     config_path = tmp_path / "splits_config.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, 'w', encoding="utf8") as f:
         yaml.dump(config_content, f)
 
     # Run the CLI command via subprocess
     result = subprocess.run([
         sys.executable, "-m", "podfeedfilter",
         "-c", str(config_path)
-    ], capture_output=True, text=True)
+    ], capture_output=True, text=True, check=False)
 
     # Check command executed successfully (should exit cleanly even if no files
     # created)
@@ -111,7 +111,7 @@ def test_cli_subprocess_with_nonexistent_config(tmp_path):
     result = subprocess.run([
         sys.executable, "-m", "podfeedfilter",
         "-c", str(nonexistent_config)
-    ], capture_output=True, text=True)
+    ], capture_output=True, text=True, check=False)
 
     # Check command failed as expected
     assert result.returncode != 0, (
@@ -127,14 +127,14 @@ def test_cli_subprocess_with_invalid_config(tmp_path):
     """Test CLI invocation via subprocess.run with invalid YAML config."""
     # Create invalid YAML config
     invalid_config = tmp_path / "invalid_config.yaml"
-    with open(invalid_config, 'w') as f:
+    with open(invalid_config, 'w', encoding="utf-8") as f:
         f.write("invalid: yaml: content:\n  - [broken")
 
     # Run the CLI command via subprocess
     result = subprocess.run([
         sys.executable, "-m", "podfeedfilter",
         "-c", str(invalid_config)
-    ], capture_output=True, text=True)
+    ], capture_output=True, text=True, check=False)
 
     # Check command failed as expected
     assert result.returncode != 0, (
@@ -161,7 +161,7 @@ def test_cli_direct_main_call_with_basic_config(tmp_path,
     }
 
     config_path = tmp_path / "direct_config.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, 'w', encoding="utf-8") as f:
         yaml.dump(config_content, f)
 
     # Set up sys.argv for the main function
@@ -221,7 +221,7 @@ def test_cli_direct_main_call_with_splits_config(tmp_path,
     }
 
     config_path = tmp_path / "direct_splits_config.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, 'w', encoding="utf-8") as f:
         yaml.dump(config_content, f)
 
     # Set up sys.argv for the main function
@@ -279,7 +279,7 @@ def test_cli_direct_main_call_with_default_config(tmp_path,
 
     # Create feeds.yaml in tmp_path (the default config name)
     config_path = tmp_path / "feeds.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, 'w', encoding="utf-8") as f:
         yaml.dump(config_content, f)
 
     # Change to tmp_path so default config is found
@@ -336,7 +336,7 @@ def test_cli_direct_main_call_with_invalid_config(tmp_path, monkeypatch,
     """Test main() function directly with invalid YAML config."""
     # Create invalid YAML config
     invalid_config = tmp_path / "invalid_config.yaml"
-    with open(invalid_config, 'w') as f:
+    with open(invalid_config, 'w', encoding="utf-8") as f:
         f.write("invalid: yaml: content:\n  - [broken")
 
     # Set up sys.argv for the main function
@@ -353,7 +353,7 @@ def test_cli_help_flag_subprocess():
     result = subprocess.run([
         sys.executable, "-m", "podfeedfilter",
         "--help"
-    ], capture_output=True, text=True)
+    ], capture_output=True, text=True, check=False)
 
     # Check command executed successfully
     assert result.returncode == 0, (

@@ -14,12 +14,14 @@ import yaml
 
 @dataclass
 class FeedConfig:
+    """Configuration for a single podcast feed filtering task."""
     url: str
     output: str
     include: List[str] = field(default_factory=list)
     exclude: List[str] = field(default_factory=list)
     title: str | None = None
     description: str | None = None
+    check_modified: bool = True
     private: bool = True
 
 
@@ -48,6 +50,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     exclude=item.get("exclude", []) or [],
                     title=item.get("title"),
                     description=item.get("description"),
+                    check_modified=item.get("check_modified", True),
                     private=item.get("private", True),
                 )
             )
@@ -63,6 +66,7 @@ def load_config(path: str) -> List[FeedConfig]:
                     exclude=split.get("exclude", []) or [],
                     title=split.get("title"),
                     description=split.get("description"),
+                    check_modified=split.get("check_modified", item.get("check_modified", True)),
                     private=split.get("private", True),
                 )
             )
