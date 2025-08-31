@@ -92,6 +92,25 @@ feeds:
         assert feeds[1].private is False  # split1
         assert feeds[2].private is True   # split2
         assert feeds[3].private is True   # split3 (default)
+    
+    def test_private_only_configuration_creates_base_output(self, tmp_path):
+        """Test that config with only url and private field creates base output."""
+        config_content = """
+feeds:
+  - url: "http://example.com/feed.xml"
+    private: false
+"""
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(config_content)
+        
+        feeds = load_config(str(config_file))
+        assert len(feeds) == 1
+        assert feeds[0].url == "http://example.com/feed.xml"
+        assert feeds[0].output == "filtered.xml"  # Default output
+        assert feeds[0].private is False
+        assert feeds[0].include == []
+        assert feeds[0].exclude == []
+    
 
 
 class TestPrivateITunesBlockGeneration:

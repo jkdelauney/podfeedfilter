@@ -41,6 +41,7 @@ def load_config(path: str) -> List[FeedConfig]:
             or item.get("exclude")
             or item.get("title")
             or item.get("description")
+            or "private" in item
         ):
             feeds.append(
                 FeedConfig(
