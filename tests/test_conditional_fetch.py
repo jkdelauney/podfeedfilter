@@ -383,7 +383,7 @@ class TestProcessFeedConditional:
   <channel>
     <title>Test Podcast</title>
     <description>A test podcast</description>
-    
+
     <item>
       <title>Episode 1: Tech Discussion</title>
       <link>https://example.com/ep1</link>
@@ -395,7 +395,7 @@ class TestProcessFeedConditional:
         self.output_path.write_text(existing_feed_xml)
         original_time = 1704110400.0  # Jan 1, 2024 12:00:00 GMT
         os.utime(self.output_path, (original_time, original_time))
-        
+
         # Remote feed has a new episode, but it doesn't match our filter
         updated_feed_content = b'''<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -403,14 +403,14 @@ class TestProcessFeedConditional:
     <title>Test Podcast</title>
     <link>https://example.com/podcast</link>
     <description>A test podcast</description>
-    
+
     <item>
       <title>Episode 2: Sports Talk</title>
       <link>https://example.com/ep2</link>
       <guid>ep2</guid>
       <description>A sports episode</description>
     </item>
-    
+
     <item>
       <title>Episode 1: Tech Discussion</title>
       <link>https://example.com/ep1</link>
@@ -419,7 +419,7 @@ class TestProcessFeedConditional:
     </item>
   </channel>
 </rss>'''
-        
+
         responses.add(
             responses.GET,
             self.url,
@@ -427,16 +427,16 @@ class TestProcessFeedConditional:
             headers={"Last-Modified": "Mon, 02 Jan 2024 12:00:00 GMT"},
             status=200
         )
-        
+
         config = FeedConfig(
             url=self.url,
             output=str(self.output_path),
             include=["tech"],  # Only tech episodes - sports episode won't match
             check_modified=True
         )
-        
+
         process_feed(config)
-        
+
         # File should be updated (rewritten) but timestamp should NOT be set to Last-Modified
         # because no new episodes were actually added to this filtered feed
         assert self.output_path.exists()
@@ -445,7 +445,7 @@ class TestProcessFeedConditional:
         assert self.output_path.stat().st_mtime != last_modified_timestamp
         # File was rewritten so timestamp changed from original, but not set to Last-Modified
         assert self.output_path.stat().st_mtime != original_time
-        
+
         # Verify content is still the same (only tech episode)
         content = self.output_path.read_text()
         assert "Episode 1: Tech Discussion" in content

@@ -1,16 +1,12 @@
 """Tests for the CLI private flag functionality.
 
-Tests the --private/-p command line argument that overrides 
+Tests the --private/-p command line argument that overrides
 configuration file settings for all feeds.
 """
 
 import subprocess
 import sys
-import tempfile  # noqa: F401
 from pathlib import Path
-
-import feedparser  # noqa: F401
-import pytest  # noqa: F401
 
 
 class TestPrivateCLIFlag:
@@ -24,9 +20,10 @@ class TestPrivateCLIFlag:
             [sys.executable, "-m", "podfeedfilter", "--help"],
             capture_output=True,
             text=True,
-            cwd=str(project_root)
+            cwd=str(project_root),
+            check=False
         )
-        
+
         assert result.returncode == 0
         assert "--private" in result.stdout
         assert "{true,false}" in result.stdout
@@ -46,7 +43,7 @@ feeds:
 """
         config_file = tmp_path / "test_config.yaml"
         config_file.write_text(config_content)
-        
+
         # Create mock RSS feed
         mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -62,21 +59,21 @@ feeds:
 </item>
 </channel>
 </rss>"""
-        
+
         # Create test data directory structure
         test_data_dir = tmp_path / "data" / "feeds"
         test_data_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create monkeypatch-compatible feeds
         (test_data_dir / "normal_feed.xml").write_text(mock_rss)
         (test_data_dir / "minimal_feed.xml").write_text(mock_rss)
         (test_data_dir / "empty_feed.xml").write_text("""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel><title>Empty</title><description>Empty</description></channel></rss>""")
-        
+
         # Test with --private false (should override all to public)
         project_root = Path(__file__).parent.parent
-        result = subprocess.run([
-            sys.executable, "-c", 
+        subprocess.run([
+            sys.executable, "-c",
             f"""
 import sys
 sys.path.insert(0, '{project_root}')
@@ -93,7 +90,7 @@ def mock_parse(url_or_file, *args, **kwargs):
         'http://test/feed1': '{test_data_dir / "normal_feed.xml"}',
         'http://test/feed2': '{test_data_dir / "minimal_feed.xml"}',
     }}
-    
+
     if isinstance(url_or_file, str) and url_or_file in test_url_mapping:
         return original_parse(test_url_mapping[url_or_file], *args, **kwargs)
     return original_parse(url_or_file, *args, **kwargs)
@@ -106,21 +103,22 @@ import sys
 sys.argv = ['podfeedfilter', '-c', '{config_file}', '--private', 'false']
 main()
 """
-        ], 
+        ],
         capture_output=True,
         text=True,
-        cwd=str(tmp_path)
+        cwd=str(tmp_path),
+        check=False
         )
-        
+
         # Check that feeds were created and both are public (no iTunes block)
         feed1_path = tmp_path / "feed1.xml"
         feed2_path = tmp_path / "feed2.xml"
-        
+
         if feed1_path.exists():
             content1 = feed1_path.read_text()
             assert '<itunes:block>yes</itunes:block>' not in content1
             print("✓ Feed 1 is public (no iTunes block)")
-        
+
         if feed2_path.exists():
             content2 = feed2_path.read_text()
             assert '<itunes:block>yes</itunes:block>' not in content2
@@ -137,7 +135,7 @@ feeds:
 """
         config_file = tmp_path / "test_config.yaml"
         config_file.write_text(config_content)
-        
+
         mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
@@ -152,15 +150,15 @@ feeds:
 </item>
 </channel>
 </rss>"""
-        
+
         # Create the data structure for testing
         test_data_dir = tmp_path / "data" / "feeds"
         test_data_dir.mkdir(parents=True, exist_ok=True)
         (test_data_dir / "normal_feed.xml").write_text(mock_rss)
-        
+
         project_root = Path(__file__).parent.parent
-        result = subprocess.run([
-            sys.executable, "-c", 
+        subprocess.run([
+            sys.executable, "-c",
             f"""
 import sys
 sys.path.insert(0, '{project_root}')
@@ -180,15 +178,16 @@ from podfeedfilter.__main__ import main
 sys.argv = ['podfeedfilter', '-c', '{config_file}', '--private', 'true']
 main()
 """
-        ], 
+        ],
         capture_output=True,
         text=True,
-        cwd=str(tmp_path)
+        cwd=str(tmp_path),
+        check=False
         )
-        
+
         # Check that feed was created and is private (has iTunes block)
         feed1_path = tmp_path / "feed1.xml"
-        
+
         if feed1_path.exists():
             content1 = feed1_path.read_text()
             assert '<itunes:block>yes</itunes:block>' in content1
@@ -198,13 +197,14 @@ main()
         """Test that invalid --private values are rejected."""
         project_root = Path(__file__).parent.parent
         result = subprocess.run([
-            sys.executable, "-m", "podfeedfilter", 
+            sys.executable, "-m", "podfeedfilter",
             "--private", "invalid"
         ],
         capture_output=True,
         text=True,
-        cwd=str(project_root)
+        cwd=str(project_root),
+        check=False
         )
-        
+
         assert result.returncode != 0
         assert "invalid choice" in result.stderr.lower() or "choose from" in result.stderr.lower()
