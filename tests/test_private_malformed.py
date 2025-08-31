@@ -4,8 +4,10 @@ Tests that the config parser properly handles and validates private field values
 that are not valid boolean types or representations.
 """
 
-import pytest
-from pathlib import Path
+from pathlib import Path  # noqa: F401
+
+import pytest  # noqa: F401
+
 from podfeedfilter.config import load_config
 
 

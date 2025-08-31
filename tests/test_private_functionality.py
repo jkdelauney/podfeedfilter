@@ -7,11 +7,13 @@ Tests cover:
 - Integration with splits
 """
 
-import pytest
 import re
-import tempfile
-import feedparser
-from pathlib import Path
+import tempfile  # noqa: F401
+from pathlib import Path  # noqa: F401
+
+import feedparser  # noqa: F401
+import pytest  # noqa: F401
+
 from podfeedfilter.config import FeedConfig, load_config
 from podfeedfilter.filterer import process_feed
 

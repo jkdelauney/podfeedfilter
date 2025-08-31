@@ -4,12 +4,13 @@ Tests the --private/-p command line argument that overrides
 configuration file settings for all feeds.
 """
 
-import pytest
 import subprocess
 import sys
-import tempfile
-import feedparser
+import tempfile  # noqa: F401
 from pathlib import Path
+
+import feedparser  # noqa: F401
+import pytest  # noqa: F401
 
 
 class TestPrivateCLIFlag:
@@ -17,11 +18,13 @@ class TestPrivateCLIFlag:
 
     def test_cli_help_shows_private_option(self):
         """Test that --help shows the new --private option."""
+        # Use current working directory to make test portable
+        project_root = Path(__file__).parent.parent
         result = subprocess.run(
             [sys.executable, "-m", "podfeedfilter", "--help"],
             capture_output=True,
             text=True,
-            cwd="/Users/jody/work/python/podfeedfilter"
+            cwd=str(project_root)
         )
         
         assert result.returncode == 0
@@ -71,12 +74,13 @@ feeds:
 <rss version="2.0"><channel><title>Empty</title><description>Empty</description></channel></rss>""")
         
         # Test with --private false (should override all to public)
+        project_root = Path(__file__).parent.parent
         result = subprocess.run([
             sys.executable, "-c", 
             f"""
 import sys
-sys.path.insert(0, '/Users/jody/work/python/podfeedfilter')
-sys.path.insert(0, '/Users/jody/work/python/podfeedfilter/tests')
+sys.path.insert(0, '{project_root}')
+sys.path.insert(0, '{project_root / "tests"}')
 
 # Mock feedparser for testing
 import feedparser
@@ -154,11 +158,12 @@ feeds:
         test_data_dir.mkdir(parents=True, exist_ok=True)
         (test_data_dir / "normal_feed.xml").write_text(mock_rss)
         
+        project_root = Path(__file__).parent.parent
         result = subprocess.run([
             sys.executable, "-c", 
             f"""
 import sys
-sys.path.insert(0, '/Users/jody/work/python/podfeedfilter')
+sys.path.insert(0, '{project_root}')
 
 import feedparser
 
@@ -191,13 +196,14 @@ main()
 
     def test_cli_invalid_private_value(self):
         """Test that invalid --private values are rejected."""
+        project_root = Path(__file__).parent.parent
         result = subprocess.run([
             sys.executable, "-m", "podfeedfilter", 
             "--private", "invalid"
         ],
         capture_output=True,
         text=True,
-        cwd="/Users/jody/work/python/podfeedfilter"
+        cwd=str(project_root)
         )
         
         assert result.returncode != 0

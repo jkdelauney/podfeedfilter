@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import cast
 import email.utils
 import os
-import time
 import feedparser
 import requests
 from feedgen.feed import FeedGenerator
@@ -162,7 +161,7 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
 
     # Add iTunes block tag if private is True (default)
     if cfg.private:
-        fg.podcast.itunes_block('yes')
+        fg.podcast.itunes_block('yes')  # pylint: disable=no-member
 
     for entry in existing_entries:
         fe = fg.add_entry()
@@ -173,7 +172,6 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fg.rss_file(str(output_path))
-    
     # Set the output file's modification time to match Last-Modified header
     # ONLY when new episodes were actually added to the output file
     if use_conditional_fetch and new_entries:
