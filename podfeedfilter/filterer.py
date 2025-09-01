@@ -14,6 +14,7 @@ import feedparser
 import requests
 from feedgen.feed import FeedGenerator
 from .config import FeedConfig
+from .author_utils import extract_authors
 
 
 def _text_matches(text: str, keywords: list[str]) -> bool:
@@ -83,8 +84,11 @@ def _copy_entry(fe, entry: feedparser.FeedParserDict) -> None:
         fe.description(description)
     if "published" in entry:
         fe.published(entry["published"])
-    if "author" in entry:
-        fe.author({"name": entry["author"]})
+    
+    # Handle authors robustly - supports strings, dicts, lists, and various field names
+    authors = extract_authors(entry)
+    for author in authors:
+        fe.author(author)
     if "content" in entry:
         for content in entry["content"]:
             fe.content(content.get("value", ""), type=content.get("type"))

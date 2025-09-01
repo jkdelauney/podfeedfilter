@@ -124,6 +124,32 @@ python -m podfeedfilter -c feeds.yaml --private false
 python -m podfeedfilter -c feeds.yaml
 ```
 
+## Enhanced Author Support
+
+**New in v0.1.0**: podfeedfilter now includes robust support for various RSS feed author formats, addressing Issue #6. This enhancement maintains 100% backward compatibility while significantly improving author data handling.
+
+### Supported Author Formats
+
+The application now correctly processes:
+
+- **Simple strings**: `"John Doe"`
+- **Email with name**: `"john@example.com (John Doe)"`
+- **Email only**: `"john@example.com"`
+- **Dictionary/object formats**: `{"name": "John Doe", "email": "john@example.com"}`
+- **Multiple authors**: Lists containing any combination of the above formats
+- **Alternative field names**: `authors`, `dc_creator`, `creator` in addition to `author`
+
+### Backward Compatibility
+
+**No migration required** - All existing configurations continue to work exactly as before. The enhanced author handling is automatic and transparent.
+
+### Technical Implementation
+
+- New `podfeedfilter.author_utils` module handles all author format variations
+- Comprehensive error handling prevents malformed author data from breaking feed processing
+- Extensive test coverage (100+ test cases) ensures reliability across edge cases
+- Logging for debugging author parsing issues
+
 ## Development
 
 ### Running Tests
@@ -134,7 +160,7 @@ The project uses pytest for testing. To run the full test suite:
 pytest -q
 ```
 
-This will run 127 tests covering various aspects of the feed filtering functionality.
+This will run 150+ tests covering various aspects of the feed filtering functionality, including robust author handling.
 
 ### Test Coverage
 
@@ -146,7 +172,7 @@ pytest -q --cov=podfeedfilter.config --cov=podfeedfilter.filterer --cov-report=t
 
 The coverage configuration is also included in `pytest.ini`, so running `pytest` will automatically include coverage reporting. Coverage reports are generated in both terminal and HTML formats (in `htmlcov/` directory).
 
-Current coverage: **100%** for both `config.py` and `filterer.py`.
+Current coverage: **100%** for core modules including `config.py`, `filterer.py`, and `author_utils.py`.
 
 ### Installing Development Dependencies
 
