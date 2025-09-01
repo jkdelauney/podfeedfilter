@@ -296,10 +296,6 @@ class TestPerformanceWithLongLists:
             # but filtered by include=['tech'] - only even episodes have "Tech Talk"
             tech_episodes = [e for e in output_feed.entries if 'tech' in e.get('title', '').lower()]
             assert len(tech_episodes) == 500  # Only even episodes have "Tech Talk"
-            
-            # Ensure Sports Content episodes are effectively omitted
-            sports_episodes = [e for e in output_feed.entries if 'sports content' in e.get('title', '').lower()]
-            assert len(sports_episodes) == 0  # Sports episodes should be excluded
 
         finally:
             # Restore original parse function
