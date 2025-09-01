@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Test Podcast - Author Format Demonstration</title>
+        <description>A test podcast demonstrating various author field formats that are now supported</description>
+        <link>https://example.com/test-podcast</link>
+        <language>en-US</language>
+        
+        <!-- Episode 1: Simple string author (original format) -->
+        <item>
+            <title>Episode 1: Simple String Author</title>
+            <description>This episode has a simple string author field - the original format that always worked.</description>
+            <link>https://example.com/episode1</link>
+            <guid>episode-1-simple</guid>
+            <pubDate>Wed, 01 May 2024 10:00:00 GMT</pubDate>
+            <author>John Doe</author>
+            <enclosure url="https://example.com/audio/episode1.mp3" length="25000000" type="audio/mpeg"/>
+        </item>
+        
+        <!-- Episode 2: Email with name format -->
+        <item>
+            <title>Episode 2: Email Format Author</title>
+            <description>This episode demonstrates the email (name) format that RSS feeds sometimes use.</description>
+            <link>https://example.com/episode2</link>
+            <guid>episode-2-email</guid>
+            <pubDate>Thu, 02 May 2024 10:00:00 GMT</pubDate>
+            <author>podcast@example.com (Jane Smith)</author>
+            <enclosure url="https://example.com/audio/episode2.mp3" length="28000000" type="audio/mpeg"/>
+        </item>
+        
+        <!-- Episode 3: Just email address -->
+        <item>
+            <title>Episode 3: Email Only Author</title>
+            <description>This episode has just an email address as the author field.</description>
+            <link>https://example.com/episode3</link>
+            <guid>episode-3-email-only</guid>
+            <pubDate>Fri, 03 May 2024 10:00:00 GMT</pubDate>
+            <author>anonymous@example.com</author>
+            <enclosure url="https://example.com/audio/episode3.mp3" length="22000000" type="audio/mpeg"/>
+        </item>
+        
+        <!-- Episode 4: Dublin Core creator field -->
+        <item>
+            <title>Episode 4: Dublin Core Creator</title>
+            <description>This episode uses the Dublin Core creator field instead of author.</description>
+            <link>https://example.com/episode4</link>
+            <guid>episode-4-dc-creator</guid>
+            <pubDate>Sat, 04 May 2024 10:00:00 GMT</pubDate>
+            <dc:creator>Dr. Robert Wilson</dc:creator>
+            <enclosure url="https://example.com/audio/episode4.mp3" length="30000000" type="audio/mpeg"/>
+        </item>
+        
+        <!-- Episode 5: Mixed case scenario -->
+        <item>
+            <title>Episode 5: Complex Author Information</title>
+            <description>This episode has complex author information that would have caused issues before the fix.</description>
+            <link>https://example.com/episode5</link>
+            <guid>episode-5-complex</guid>
+            <pubDate>Sun, 05 May 2024 10:00:00 GMT</pubDate>
+            <author>chief.editor@techpodcast.com (Dr. Sarah Johnson-Smith)</author>
+            <enclosure url="https://example.com/audio/episode5.mp3" length="35000000" type="audio/mpeg"/>
+        </item>
+        
+    </channel>
+</rss>
