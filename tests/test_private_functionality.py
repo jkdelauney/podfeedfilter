@@ -13,6 +13,7 @@ import feedparser
 
 from podfeedfilter.config import FeedConfig, load_config
 from podfeedfilter.filterer import process_feed
+from .conftest import create_mock_rss
 
 
 class TestPrivateConfigParsing:
@@ -108,6 +109,24 @@ feeds:
         assert feeds[0].include == []
         assert feeds[0].exclude == []
 
+    def test_private_true_sets_private_attribute(self, tmp_path):
+        """Test that config with private: true sets the private attribute and other defaults remain unchanged."""
+        config_content = """
+feeds:
+  - url: "http://example.com/feed.xml"
+    private: true
+"""
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(config_content)
+
+        feeds = load_config(str(config_file))
+        assert len(feeds) == 1
+        assert feeds[0].url == "http://example.com/feed.xml"
+        assert feeds[0].output == "filtered.xml"  # Default output
+        assert feeds[0].private is True
+        assert feeds[0].include == []
+        assert feeds[0].exclude == []
+
 
 
 class TestPrivateITunesBlockGeneration:
@@ -115,20 +134,7 @@ class TestPrivateITunesBlockGeneration:
 
     def _create_mock_feed_file(self, tmp_path):
         """Helper to create a mock RSS feed file."""
-        mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>Test Podcast</title>
-<description>Test Description</description>
-<link>http://example.com</link>
-<item>
-<title>Test Episode</title>
-<description>Test episode description</description>
-<link>http://example.com/episode1</link>
-<guid>episode1</guid>
-</item>
-</channel>
-</rss>"""
+        mock_rss = create_mock_rss()
         mock_file = tmp_path / "mock_feed.xml"
         mock_file.write_text(mock_rss)
         return str(mock_file)
@@ -275,26 +281,11 @@ class TestPrivateWithExistingFeatures:
 
     def test_private_with_filtering(self, tmp_path):
         """Test that private flag works with include/exclude filtering."""
-        mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>Test Podcast</title>
-<description>Test Description</description>
-<link>http://example.com</link>
-<item>
-<title>Tech Episode</title>
-<description>Programming and technology</description>
-<link>http://example.com/tech</link>
-<guid>tech</guid>
-</item>
-<item>
-<title>Politics Episode</title>
-<description>Political discussions</description>
-<link>http://example.com/politics</link>
-<guid>politics</guid>
-</item>
-</channel>
-</rss>"""
+        episodes = [
+            {'title': 'Tech Episode', 'description': 'Programming and technology', 'link': 'http://example.com/tech', 'guid': 'tech'},
+            {'title': 'Politics Episode', 'description': 'Political discussions', 'link': 'http://example.com/politics', 'guid': 'politics'}
+        ]
+        mock_rss = create_mock_rss(episodes=episodes)
         mock_file = tmp_path / "mock_feed.xml"
         mock_file.write_text(mock_rss)
         output_file = tmp_path / "filtered_private.xml"
@@ -322,20 +313,8 @@ class TestPrivateWithExistingFeatures:
 
     def test_private_with_title_description_override(self, tmp_path):
         """Test private flag with custom title/description."""
-        mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>Original Title</title>
-<description>Original Description</description>
-<link>http://example.com</link>
-<item>
-<title>Test Episode</title>
-<description>Test description</description>
-<link>http://example.com/episode</link>
-<guid>episode</guid>
-</item>
-</channel>
-</rss>"""
+        episodes = [{'title': 'Test Episode', 'description': 'Test description', 'link': 'http://example.com/episode', 'guid': 'episode'}]
+        mock_rss = create_mock_rss(title="Original Title", description="Original Description", episodes=episodes)
         mock_file = tmp_path / "mock_feed.xml"
         mock_file.write_text(mock_rss)
         output_file = tmp_path / "custom_private.xml"
