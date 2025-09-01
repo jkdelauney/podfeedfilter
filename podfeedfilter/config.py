@@ -35,13 +35,13 @@ def load_config(path: str) -> List[FeedConfig]:
         url = item["url"]
 
         # create a base output if one is defined
-        if (
-            "output" in item
-            or item.get("include")
-            or item.get("exclude")
-            or item.get("title")
-            or item.get("description")
-        ):
+        _has_base_config = (
+            "output" in item or item.get("include") or item.get("exclude")
+        )
+        _has_metadata = (
+            item.get("title") or item.get("description") or "private" in item
+        )
+        if _has_base_config or _has_metadata:
             feeds.append(
                 FeedConfig(
                     url=url,

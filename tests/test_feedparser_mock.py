@@ -52,7 +52,7 @@ def test_mock_feedparser_parse_empty_feed(mock_feedparser_parse, test_feed_urls)
 
     # Empty feed should still have feed metadata but no entries
     assert parsed_feed.feed.title is not None
-    assert len(parsed_feed.entries) == 0
+    assert not parsed_feed.entries
 
 
 def test_mock_feedparser_parse_nonexistent_mapping(mock_feedparser_parse):

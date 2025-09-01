@@ -141,6 +141,51 @@ def create_test_yaml_config(config_dict: Dict[str, Any]) -> str:
     return yaml.dump(config_dict, default_flow_style=False)
 
 
+def create_mock_rss(title: str = "Test Podcast", description: str = "Test Description", 
+                   link: str = "http://example.com", episodes: list = None) -> str:
+    """Helper function to create a mock RSS feed XML string.
+    
+    Args:
+        title: The podcast title
+        description: The podcast description  
+        link: The podcast link
+        episodes: List of episode dicts with keys: title, description, link, guid
+        
+    Returns:
+        Complete RSS XML string
+    """
+    if episodes is None:
+        episodes = [{
+            'title': 'Test Episode',
+            'description': 'Test episode description',
+            'link': 'http://example.com/episode1',
+            'guid': 'episode1'
+        }]
+    
+    rss_template = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<title>{title}</title>
+<description>{description}</description>
+<link>{link}</link>
+{items}
+</channel>
+</rss>"""
+    
+    items_xml = ""
+    for episode in episodes:
+        item_xml = f"""<item>
+<title>{episode.get('title', 'Test Episode')}</title>
+<description>{episode.get('description', 'Test description')}</description>
+<link>{episode.get('link', 'http://example.com/episode')}</link>
+<guid>{episode.get('guid', 'episode')}</guid>
+</item>
+"""
+        items_xml += item_xml
+    
+    return rss_template.format(title=title, description=description, link=link, items=items_xml)
+
+
 # Config fixture helpers
 CONFIG_DIR = TEST_DATA_DIR / "configs"
 

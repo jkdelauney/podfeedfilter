@@ -93,65 +93,71 @@ def _copy_entry(fe, entry: feedparser.FeedParserDict) -> None:
             fe.enclosure(enc.get("href"), enc.get("length"), enc.get("type"))
 
 
-def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
-    """Process a single feed: download, filter, and generate output feed."""
-    output_path = Path(cfg.output)
+def _load_existing_entries(output_path: Path) -> tuple[list[feedparser.FeedParserDict], set[str]]:
+    """Load existing entries and IDs from output file."""
     existing_entries: list[feedparser.FeedParserDict] = []
     existing_ids: set[str] = set()
 
-    # Determine if we should use conditional fetching
-    use_conditional_fetch = cfg.check_modified and not no_check_modified
-
-    # Get existing file modification time for conditional requests
-    file_mtime = None
     if output_path.exists():
-        file_mtime = output_path.stat().st_mtime if use_conditional_fetch else None
         parsed = feedparser.parse(output_path)
         for entry in parsed.entries:
             existing_entries.append(entry)
-            entry_id = str(entry.get('id') or entry.get('link'))
-            existing_ids.add(entry_id)
+            entry_id = entry.get('id') or entry.get('link')
+            if entry_id is not None:
+                existing_ids.add(str(entry_id))
 
-    # Fetch the remote feed (conditionally if enabled)
+    return existing_entries, existing_ids
+
+
+def _fetch_remote_feed(cfg: FeedConfig, use_conditional_fetch: bool,
+                      file_mtime: float | None
+                      ) -> tuple[feedparser.util.FeedParserDict | None, float | None]:
+    """Fetch remote feed with conditional fetching if enabled."""
     last_modified_ts = None
+
     if use_conditional_fetch:
-        # Try conditional fetch
         try:
             content, last_modified_ts = _conditional_fetch(cfg.url, file_mtime)
             if content is None:
-                # Feed hasn't been modified, nothing to do
-                return
+                # Feed hasn't been modified, return None to signal early exit
+                return None, None
             remote = feedparser.parse(content)
         except (requests.RequestException, ValueError) as e:
-            # Fallback to regular fetch if conditional fetch fails
             print(f"Warning: Conditional fetch failed for {cfg.url}: {e}")
             print("Falling back to regular fetch...")
             remote = feedparser.parse(cfg.url)
     else:
-        # Use regular fetch
         remote = feedparser.parse(cfg.url)
 
-    remote_feed = cast(feedparser.FeedParserDict, remote.feed)
+    return remote, last_modified_ts
+
+
+def _filter_new_entries(remote_entries: list, existing_ids: set[str],
+                       cfg: FeedConfig) -> list[feedparser.FeedParserDict]:
+    """Filter remote entries for new items that pass include/exclude criteria."""
     new_entries = []
-    for entry in remote.entries:
+    for entry in remote_entries:
         entry_id = entry.get('id') or entry.get('link')
-        if entry_id in existing_ids:
+        # Skip entries without valid IDs or entries that already exist
+        if entry_id is None or str(entry_id) in existing_ids:
             continue
         if _entry_passes(entry, cfg.include, cfg.exclude):
             new_entries.append(entry)
+    return new_entries
 
-    # If no existing entries and no new ones, nothing to do
-    if not existing_entries and not new_entries:
-        return
 
+def _setup_feed_generator(cfg: FeedConfig, remote_feed: feedparser.FeedParserDict) -> FeedGenerator:
+    """Set up the FeedGenerator with metadata and settings."""
     fg = FeedGenerator()
     fg.load_extension('podcast')
 
     feed_title = cfg.title if cfg.title is not None else remote_feed.get(
         'title', 'Filtered Feed')
     fg.title(feed_title)
+
     if remote_feed.get('link'):
         fg.link(href=remote_feed['link'])
+
     feed_description = (
         cfg.description
         if cfg.description is not None
@@ -163,6 +169,12 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
     if cfg.private:
         fg.podcast.itunes_block('yes')  # pylint: disable=no-member
 
+    return fg
+
+
+def _add_entries_to_feed(fg: FeedGenerator, existing_entries: list[feedparser.FeedParserDict],
+                        new_entries: list[feedparser.FeedParserDict]) -> None:
+    """Add all entries (existing + new) to the feed generator."""
     for entry in existing_entries:
         fe = fg.add_entry()
         _copy_entry(fe, entry)
@@ -170,14 +182,49 @@ def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
         fe = fg.add_entry()
         _copy_entry(fe, entry)
 
+
+def _update_file_timestamp(output_path: Path, last_modified_ts: float | None) -> None:
+    """Update file timestamp if Last-Modified header is available."""
+    if last_modified_ts is not None:
+        os.utime(output_path, (last_modified_ts, last_modified_ts))
+
+
+def process_feed(cfg: FeedConfig, no_check_modified: bool = False):
+    """Process a single feed: download, filter, and generate output feed."""
+    output_path = Path(cfg.output)
+
+    # Load existing entries and determine conditional fetch settings
+    existing_entries, existing_ids = _load_existing_entries(output_path)
+    use_conditional_fetch = cfg.check_modified and not no_check_modified
+    file_mtime = (
+        output_path.stat().st_mtime
+        if (output_path.exists() and use_conditional_fetch)
+        else None
+    )
+
+    # Fetch remote feed
+    remote, last_modified_ts = _fetch_remote_feed(cfg, use_conditional_fetch, file_mtime)
+    if remote is None:
+        # Feed hasn't been modified, nothing to do
+        return
+
+    remote_feed = cast(feedparser.FeedParserDict, remote.feed)
+
+    # Filter new entries
+    new_entries = _filter_new_entries(remote.entries, existing_ids, cfg)
+
+    # Exit early if no content to process
+    if not existing_entries and not new_entries:
+        return
+
+    # Generate output feed
+    fg = _setup_feed_generator(cfg, remote_feed)
+    _add_entries_to_feed(fg, existing_entries, new_entries)
+
+    # Write output file
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fg.rss_file(str(output_path))
-    # Set the output file's modification time to match Last-Modified header
-    # ONLY when new episodes were actually added to the output file
+
+    # Update file timestamp if needed
     if use_conditional_fetch and new_entries:
-        # Only update timestamp when we have new episodes to add
-        if last_modified_ts is not None:
-            # Use server's Last-Modified timestamp
-            os.utime(output_path, (last_modified_ts, last_modified_ts))
-        # If no Last-Modified header, preserve existing timestamp by not updating it
-        # This ensures the file timestamp reflects when it was last meaningfully updated
+        _update_file_timestamp(output_path, last_modified_ts)
