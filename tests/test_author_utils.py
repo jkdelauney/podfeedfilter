@@ -63,21 +63,19 @@ class TestNormalizeAuthorDict:
         result = _normalize_author_dict(author_dict)
         assert result == {"name": "John Doe", "email": "john@example.com"}
 
-    def test_normalize_author_dict_alternative_keys(self):
+    @pytest.mark.parametrize("input_dict,expected", [
+        ({"title": "Jane Smith"}, {"name": "Jane Smith"}),
+        ({"displayName": "Bob Wilson"}, {"name": "Bob Wilson"}),
+        ({"full_name": "Alice Cooper"}, {"name": "Alice Cooper"}),
+        ({"author_name": "Dr. Smith"}, {"name": "Dr. Smith"}),
+        ({"email_address": "test@example.com"}, {"email": "test@example.com"}),
+        ({"author_email": "author@site.com"}, {"email": "author@site.com"}),
+        ({"mail": "user@domain.org"}, {"email": "user@domain.org"}),
+    ])
+    def test_normalize_author_dict_alternative_keys(self, input_dict, expected):
         """Test normalization with alternative key names."""
-        test_cases = [
-            ({"title": "Jane Smith"}, {"name": "Jane Smith"}),
-            ({"displayName": "Bob Wilson"}, {"name": "Bob Wilson"}),
-            ({"full_name": "Alice Cooper"}, {"name": "Alice Cooper"}),
-            ({"author_name": "Dr. Smith"}, {"name": "Dr. Smith"}),
-            ({"email_address": "test@example.com"}, {"email": "test@example.com"}),
-            ({"author_email": "author@site.com"}, {"email": "author@site.com"}),
-            ({"mail": "user@domain.org"}, {"email": "user@domain.org"}),
-        ]
-        
-        for input_dict, expected in test_cases:
-            result = _normalize_author_dict(input_dict)
-            assert result == expected
+        result = _normalize_author_dict(input_dict)
+        assert result == expected
 
     def test_normalize_author_dict_priority_order(self):
         """Test that higher priority keys take precedence."""
@@ -91,22 +89,20 @@ class TestNormalizeAuthorDict:
         result = _normalize_author_dict(author_dict)
         assert result == {"email": "primary@example.com"}
 
-    def test_normalize_author_dict_invalid_inputs(self):
+    @pytest.mark.parametrize("invalid_input", [
+        None,
+        "not a dict",
+        [],
+        42,
+        {},  # Empty dict
+        {"irrelevant_key": "value"},  # No name or email keys
+        {"name": "", "email": ""},  # Empty values
+        {"name": None, "email": None},  # None values
+    ])
+    def test_normalize_author_dict_invalid_inputs(self, invalid_input):
         """Test handling of invalid dictionary inputs."""
-        invalid_inputs = [
-            None,
-            "not a dict",
-            [],
-            42,
-            {},  # Empty dict
-            {"irrelevant_key": "value"},  # No name or email keys
-            {"name": "", "email": ""},  # Empty values
-            {"name": None, "email": None},  # None values
-        ]
-        
-        for invalid_input in invalid_inputs:
-            result = _normalize_author_dict(invalid_input)
-            assert result is None
+        result = _normalize_author_dict(invalid_input)
+        assert result is None
 
     def test_normalize_author_dict_email_validation(self):
         """Test basic email validation in normalization."""
@@ -122,29 +118,25 @@ class TestNormalizeAuthorDict:
 class TestExtractSingleAuthor:
     """Test extraction of author information from single values."""
 
-    def test_extract_single_author_string_inputs(self):
+    @pytest.mark.parametrize("input_str,expected", [
+        ("John Doe", {"name": "John Doe"}),
+        ("john@example.com (John Doe)", {"name": "John Doe", "email": "john@example.com"}),
+        ("simple@example.com", {"email": "simple@example.com"}),
+    ])
+    def test_extract_single_author_string_inputs(self, input_str, expected):
         """Test extraction from string inputs."""
-        test_cases = [
-            ("John Doe", {"name": "John Doe"}),
-            ("john@example.com (John Doe)", {"name": "John Doe", "email": "john@example.com"}),
-            ("simple@example.com", {"email": "simple@example.com"}),
-        ]
-        
-        for input_str, expected in test_cases:
-            result = _extract_single_author(input_str)
-            assert result == expected
+        result = _extract_single_author(input_str)
+        assert result == expected
 
-    def test_extract_single_author_dict_inputs(self):
+    @pytest.mark.parametrize("input_dict,expected", [
+        ({"name": "Jane", "email": "jane@example.com"}, {"name": "Jane", "email": "jane@example.com"}),
+        ({"title": "Dr. Smith"}, {"name": "Dr. Smith"}),
+        ({"email": "test@example.com"}, {"email": "test@example.com"}),
+    ])
+    def test_extract_single_author_dict_inputs(self, input_dict, expected):
         """Test extraction from dictionary inputs."""
-        test_cases = [
-            ({"name": "Jane", "email": "jane@example.com"}, {"name": "Jane", "email": "jane@example.com"}),
-            ({"title": "Dr. Smith"}, {"name": "Dr. Smith"}),
-            ({"email": "test@example.com"}, {"email": "test@example.com"}),
-        ]
-        
-        for input_dict, expected in test_cases:
-            result = _extract_single_author(input_dict)
-            assert result == expected
+        result = _extract_single_author(input_dict)
+        assert result == expected
 
     def test_extract_single_author_other_types(self):
         """Test extraction from other data types."""
@@ -159,21 +151,19 @@ class TestExtractSingleAuthor:
         result = _extract_single_author(False)
         assert result is None
 
-    def test_extract_single_author_invalid_inputs(self):
+    @pytest.mark.parametrize("invalid_input", [
+        None,
+        "",
+        "   ",  # Whitespace only
+        {},  # Empty dict
+        [],  # Empty list (filtered out)
+        True,  # Boolean (filtered out)
+        False,  # Boolean (filtered out)
+    ])
+    def test_extract_single_author_invalid_inputs(self, invalid_input):
         """Test handling of invalid inputs."""
-        invalid_inputs = [
-            None,
-            "",
-            "   ",  # Whitespace only
-            {},  # Empty dict
-            [],  # Empty list (filtered out)
-            True,  # Boolean (filtered out)
-            False,  # Boolean (filtered out)
-        ]
-        
-        for invalid_input in invalid_inputs:
-            result = _extract_single_author(invalid_input)
-            assert result is None
+        result = _extract_single_author(invalid_input)
+        assert result is None
 
     @patch('podfeedfilter.author_utils.logger')
     def test_extract_single_author_conversion_error(self, mock_logger):
@@ -226,17 +216,15 @@ class TestExtractAuthors:
         ]
         assert result == expected
 
-    def test_extract_authors_alternative_field_names(self):
+    @pytest.mark.parametrize("entry,expected", [
+        ({"authors": "Multiple Author"}, [{"name": "Multiple Author"}]),
+        ({"dc_creator": "DC Creator"}, [{"name": "DC Creator"}]),
+        ({"creator": "Generic Creator"}, [{"name": "Generic Creator"}]),
+    ])
+    def test_extract_authors_alternative_field_names(self, entry, expected):
         """Test extraction from alternative author field names."""
-        test_cases = [
-            ({"authors": "Multiple Author"}, [{"name": "Multiple Author"}]),
-            ({"dc_creator": "DC Creator"}, [{"name": "DC Creator"}]),
-            ({"creator": "Generic Creator"}, [{"name": "Generic Creator"}]),
-        ]
-        
-        for entry, expected in test_cases:
-            result = extract_authors(entry)
-            assert result == expected
+        result = extract_authors(entry)
+        assert result == expected
 
     def test_extract_authors_field_priority(self):
         """Test that author fields are checked in priority order."""
@@ -255,18 +243,16 @@ class TestExtractAuthors:
         result = extract_authors(entry)
         assert result == []
 
-    def test_extract_authors_empty_author_fields(self):
+    @pytest.mark.parametrize("entry", [
+        {"author": ""},
+        {"author": None},
+        {"authors": []},
+        {"authors": ["", None]},
+    ])
+    def test_extract_authors_empty_author_fields(self, entry):
         """Test handling of empty author fields."""
-        test_cases = [
-            {"author": ""},
-            {"author": None},
-            {"authors": []},
-            {"authors": ["", None]},
-        ]
-        
-        for entry in test_cases:
-            result = extract_authors(entry)
-            assert result == []
+        result = extract_authors(entry)
+        assert result == []
 
     def test_extract_authors_mixed_valid_invalid(self):
         """Test handling of mixed valid and invalid authors in a list."""
@@ -390,21 +376,19 @@ class TestIntegrationWithFeedparser:
         formatted = format_author_for_display(primary_author)
         assert formatted == "Simple Author Name"
 
-    def test_edge_case_malformed_data(self):
+    @pytest.mark.parametrize("entry", [
+        {"author": {"weird_key": "weird_value"}},  # Dict with no recognized keys
+        {"author": []},  # Empty list
+        {"author": [None, "", {}]},  # List of invalid items
+        {"authors": 42},  # Number instead of string/list
+        {"author": {"name": None, "email": ""}},  # Dict with empty values
+    ])
+    def test_edge_case_malformed_data(self, entry):
         """Test handling of various malformed author data."""
-        malformed_entries = [
-            {"author": {"weird_key": "weird_value"}},  # Dict with no recognized keys
-            {"author": []},  # Empty list
-            {"author": [None, "", {}]},  # List of invalid items
-            {"authors": 42},  # Number instead of string/list
-            {"author": {"name": None, "email": ""}},  # Dict with empty values
-        ]
+        # Should not raise exceptions
+        authors = extract_authors(entry)
+        primary = get_primary_author(entry)
         
-        for entry in malformed_entries:
-            # Should not raise exceptions
-            authors = extract_authors(entry)
-            primary = get_primary_author(entry)
-            
-            # Results should be empty/None but not cause errors
-            assert isinstance(authors, list)
-            assert primary is None or isinstance(primary, dict)
+        # Results should be empty/None but not cause errors
+        assert isinstance(authors, list)
+        assert primary is None or isinstance(primary, dict)
