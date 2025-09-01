@@ -102,8 +102,9 @@ def _load_existing_entries(output_path: Path) -> tuple[list[feedparser.FeedParse
         parsed = feedparser.parse(output_path)
         for entry in parsed.entries:
             existing_entries.append(entry)
-            entry_id = str(entry.get('id') or entry.get('link'))
-            existing_ids.add(entry_id)
+            entry_id = entry.get('id') or entry.get('link')
+            if entry_id is not None:
+                existing_ids.add(str(entry_id))
 
     return existing_entries, existing_ids
 
@@ -137,7 +138,8 @@ def _filter_new_entries(remote_entries: list, existing_ids: set[str],
     new_entries = []
     for entry in remote_entries:
         entry_id = entry.get('id') or entry.get('link')
-        if entry_id in existing_ids:
+        # Skip entries without valid IDs or entries that already exist
+        if entry_id is None or str(entry_id) in existing_ids:
             continue
         if _entry_passes(entry, cfg.include, cfg.exclude):
             new_entries.append(entry)

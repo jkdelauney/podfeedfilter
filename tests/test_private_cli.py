@@ -7,6 +7,7 @@ configuration file settings for all feeds.
 import subprocess
 import sys
 from pathlib import Path
+from .conftest import create_mock_rss
 
 
 class TestPrivateCLIFlag:
@@ -45,20 +46,7 @@ feeds:
         config_file.write_text(config_content)
 
         # Create mock RSS feed
-        mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>Test Podcast</title>
-<description>Test Description</description>
-<link>http://example.com</link>
-<item>
-<title>Test Episode</title>
-<description>Test episode description</description>
-<link>http://example.com/episode1</link>
-<guid>episode1</guid>
-</item>
-</channel>
-</rss>"""
+        mock_rss = create_mock_rss()
 
         # Create test data directory structure
         test_data_dir = tmp_path / "data" / "feeds"
@@ -136,20 +124,7 @@ feeds:
         config_file = tmp_path / "test_config.yaml"
         config_file.write_text(config_content)
 
-        mock_rss = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>Test Podcast</title>
-<description>Test Description</description>
-<link>http://example.com</link>
-<item>
-<title>Test Episode</title>
-<description>Test episode description</description>
-<link>http://example.com/episode1</link>
-<guid>episode1</guid>
-</item>
-</channel>
-</rss>"""
+        mock_rss = create_mock_rss()
 
         # Create the data structure for testing
         test_data_dir = tmp_path / "data" / "feeds"

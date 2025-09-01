@@ -192,7 +192,7 @@ feeds: []
         result = load_config(str(config_file))
 
         assert isinstance(result, list)
-        assert len(result) == 0
+        assert not result
 
     def test_missing_feeds_key(self, tmp_path):
         """Test handling missing feeds key."""
@@ -205,7 +205,7 @@ some_other_key: "value"
         result = load_config(str(config_file))
 
         assert isinstance(result, list)
-        assert len(result) == 0
+        assert not result
 
     def test_empty_config_file(self, tmp_path):
         """Test handling completely empty config file."""
@@ -216,7 +216,7 @@ some_other_key: "value"
         result = load_config(str(config_file))
 
         assert isinstance(result, list)
-        assert len(result) == 0
+        assert not result
 
     def test_missing_url_raises_key_error(self, tmp_path):
         """Test that missing url raises KeyError."""
@@ -304,7 +304,7 @@ feeds:
         result = load_config(str(config_file))
 
         # Should be empty because no output, include, exclude, title, or description
-        assert len(result) == 0
+        assert not result
 
     def test_base_output_created_with_any_optional_field(self, tmp_path):
         """Test that base output is created when any optional field is present."""
